@@ -1,0 +1,56 @@
+export type Severity = 'critical' | 'warning' | 'info' | 'pass'
+
+export interface AuditFinding {
+  id: string
+  category: 'seo' | 'aeo' | 'geo'
+  severity: Severity
+  title: string
+  description: string
+  recommendation?: string
+  impact: 'high' | 'medium' | 'low'
+}
+
+export interface AuditScores {
+  seo: number
+  aeo: number
+  geo: number
+  overall: number
+}
+
+export interface RawData {
+  title: string | null
+  metaDescription: string | null
+  h1s: string[]
+  h2s: string[]
+  canonical: string | null
+  robotsMeta: string | null
+  schemas: string[]
+  openGraph: Record<string, string>
+  wordCount: number
+  internalLinks: number
+  externalLinks: number
+  hasRobotsTxt: boolean
+  hasSitemap: boolean
+  isHttps: boolean
+  hasFaqSchema: boolean
+  hasLlmsTxt: boolean
+  aiCrawlerBlocked: boolean
+  hasAuthorInfo: boolean
+  hasContactPage: boolean
+  hasAboutPage: boolean
+  questionHeadings: string[]
+  url: string
+}
+
+export interface AuditResult {
+  id: string
+  url: string
+  createdAt: string
+  scores: AuditScores
+  findings: AuditFinding[]
+  executiveSummary: string
+  criticalIssues: AuditFinding[]
+  quickWins: AuditFinding[]
+  opportunities: AuditFinding[]
+  rawData: RawData
+}
