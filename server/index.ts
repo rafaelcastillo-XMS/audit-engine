@@ -1,6 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import nodemailer from 'nodemailer'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { fetchSite } from './audit/fetch-site'
 import { analyzeHtml } from './audit/analyze-html'
 import { calculateScores } from './audit/scoring'
@@ -10,8 +12,13 @@ import type { AuditResult } from './audit/types'
 
 const app = express()
 const PORT = process.env.PORT ?? 3001
+const isProd = process.env.NODE_ENV === 'production'
 
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:4173'] }))
+const allowedOrigins = isProd
+  ? [process.env.APP_URL].filter(Boolean) as string[]
+  : ['http://localhost:5173', 'http://localhost:4173']
+
+app.use(cors({ origin: allowedOrigins }))
 app.use(express.json())
 
 app.get('/api/health', (_req, res) => {
@@ -165,6 +172,16 @@ app.post('/api/lead', async (req, res) => {
 
   res.json({ ok: true })
 })
+
+// En producción, Express sirve el frontend compilado
+if (isProd) {
+  const __dirname = path.dirname(fileURLToPath(import.meta.url))
+  const distPath = path.join(__dirname, '../dist')
+  app.use(express.static(distPath))
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'))
+  })
+}
 
 app.listen(PORT, () => {
   console.log(`[XMS Audit Server] Running on http://localhost:${PORT}`)
