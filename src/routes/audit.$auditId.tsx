@@ -42,10 +42,7 @@ function AuditPage() {
           Back to home
         </button>
       </div>
-      <AuditReport
-        result={result}
-        onNewAudit={() => navigate({ to: '/' })}
-      />
+      <AuditReport result={result} />
     </div>
   )
 }

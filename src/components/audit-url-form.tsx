@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, ArrowRight, Globe } from 'lucide-react'
+import { Loader2, ArrowRight, Globe, ShieldX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'
@@ -118,7 +118,10 @@ export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrl
           <p className="mt-2 text-sm text-red-500">{errors.url.message}</p>
         )}
         {error && (
-          <p className="mt-2 text-sm text-red-500">{error}</p>
+          <div className="mt-3 flex gap-3 items-start rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <ShieldX className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-500" />
+            <span>{error}</span>
+          </div>
         )}
       </form>
 

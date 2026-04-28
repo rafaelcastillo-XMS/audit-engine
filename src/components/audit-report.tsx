@@ -1,18 +1,78 @@
 import { useState } from 'react'
-import { Copy, Check, FileDown, ExternalLink, ChevronDown, AlertCircle, Lightbulb, TrendingUp, Info } from 'lucide-react'
+import { FileDown, ExternalLink, AlertCircle, Lightbulb, TrendingUp, Info, Wrench, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScoreCard } from '@/components/score-card'
-import type { AuditResult, AuditFinding } from '@/lib/audit/types'
+import { LeadModal } from '@/components/lead-modal'
+import type { AuditResult, AuditFinding, PageSpeedResult } from '@/lib/audit/types'
 import { severityColor, impactBadge, cn } from '@/lib/utils'
 
 interface AuditReportProps {
   result: AuditResult
-  onNewAudit?: () => void
+}
+
+// Google CWV thresholds
+function cwvStatus(metric: 'lcp' | 'cls' | 'inp' | 'fcp' | 'ttfb', value: number): 'good' | 'needs-improvement' | 'poor' {
+  const thresholds = {
+    lcp:  { good: 2500, poor: 4000 },
+    cls:  { good: 0.1,  poor: 0.25 },
+    inp:  { good: 200,  poor: 500  },
+    fcp:  { good: 1800, poor: 3000 },
+    ttfb: { good: 800,  poor: 1800 },
+  }
+  const t = thresholds[metric]
+  if (value <= t.good) return 'good'
+  if (value <= t.poor) return 'needs-improvement'
+  return 'poor'
+}
+
+const cwvColors = {
+  good: 'text-green-600 bg-green-50 border-green-200',
+  'needs-improvement': 'text-amber-600 bg-amber-50 border-amber-200',
+  poor: 'text-red-600 bg-red-50 border-red-200',
+}
+
+function CoreWebVitals({ ps }: { ps: PageSpeedResult }) {
+  const metrics: { key: 'lcp' | 'cls' | 'inp' | 'fcp' | 'ttfb'; label: string; value: string }[] = [
+    { key: 'lcp',  label: 'LCP',  value: `${(ps.lcp / 1000).toFixed(1)}s` },
+    { key: 'cls',  label: 'CLS',  value: `${ps.cls}` },
+    { key: 'inp',  label: 'INP',  value: `${ps.inp}ms` },
+    { key: 'fcp',  label: 'FCP',  value: `${(ps.fcp / 1000).toFixed(1)}s` },
+    { key: 'ttfb', label: 'TTFB', value: `${ps.ttfb}ms` },
+  ]
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-gray-800 text-sm">
+          <TrendingUp className="w-4 h-4 text-blue-500" />
+          Core Web Vitals
+          <span className={`ml-auto text-xs font-bold px-2 py-0.5 rounded-full border ${
+            ps.performanceScore >= 90 ? cwvColors.good :
+            ps.performanceScore >= 50 ? cwvColors['needs-improvement'] :
+            cwvColors.poor
+          }`}>{ps.performanceScore}/100</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {metrics.map(({ key, label, value }) => {
+            const status = cwvStatus(key, key === 'cls' ? ps.cls : Number(value.replace(/[^0-9.]/g, '')))
+            return (
+              <div key={key} className={`rounded-lg border p-3 text-center ${cwvColors[status]}`}>
+                <div className="text-xs font-semibold opacity-70 mb-1">{label}</div>
+                <div className="text-lg font-bold">{value}</div>
+                <div className="text-xs mt-0.5 capitalize">{status.replace('-', ' ')}</div>
+              </div>
+            )
+          })}
+        </div>
+        <p className="text-xs text-gray-400 mt-3">Measured on mobile · Powered by Google PageSpeed Insights</p>
+      </CardContent>
+    </Card>
+  )
 }
 
 const severityIcon = {
@@ -30,9 +90,10 @@ function FindingRow({ finding }: { finding: AuditFinding }) {
       <div className="flex-1 min-w-0">
         <div className="font-medium">{finding.title}</div>
         <div className="text-xs mt-0.5 opacity-80">{finding.description}</div>
-        {finding.recommendation && (
-          <div className="text-xs mt-1.5 font-medium opacity-90">
-            → {finding.recommendation}
+        {finding.recommendation && finding.severity !== 'pass' && (
+          <div className="mt-2 flex gap-1.5 items-start rounded-md bg-white/60 border border-current/10 px-2.5 py-2">
+            <Lightbulb className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-500" />
+            <span className="text-xs font-medium">{finding.recommendation}</span>
           </div>
         )}
       </div>
@@ -59,16 +120,8 @@ function FindingsList({ findings, emptyLabel }: { findings: AuditFinding[]; empt
   )
 }
 
-export function AuditReport({ result, onNewAudit }: AuditReportProps) {
-  const [copied, setCopied] = useState(false)
-
-  const handleCopy = async () => {
-    const text = buildReportText(result)
-    await navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
+export function AuditReport({ result }: AuditReportProps) {
+  const [showLeadModal, setShowLeadModal] = useState(false)
   const { scores, rawData } = result
   const domain = new URL(result.url).hostname
 
@@ -95,34 +148,39 @@ export function AuditReport({ result, onNewAudit }: AuditReportProps) {
             {new Date(result.createdAt).toLocaleString()}
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleCopy} className="gap-1.5">
-            {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
-            {copied ? 'Copied!' : 'Copy Report'}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            size="sm"
+            onClick={() => setShowLeadModal(true)}
+            className="gap-1.5 bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+          >
+            <Wrench className="w-3.5 h-3.5" />
+            Fix My Site
           </Button>
-          <Button variant="outline" size="sm" className="gap-1.5 opacity-60 cursor-not-allowed" disabled>
+          <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-1.5">
             <FileDown className="w-3.5 h-3.5" />
             Export PDF
           </Button>
-          {onNewAudit && (
-            <Button size="sm" onClick={onNewAudit}>
-              New Audit
-            </Button>
-          )}
         </div>
       </div>
 
+      {showLeadModal && (
+        <LeadModal result={result} onClose={() => setShowLeadModal(false)} />
+      )}
+
       {/* Overall Score + Sub Scores */}
       <Card className="overflow-hidden">
-        <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 p-6 md:p-8">
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="flex flex-col items-center">
-              <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Overall Score</div>
+        <div className="bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 p-6 md:p-10">
+          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            {/* Overall */}
+            <div className="flex flex-col items-center gap-1">
+              <div className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Overall Score</div>
               <ScoreCard label="" score={scores.overall} size="lg" />
             </div>
-            <Separator orientation="vertical" className="hidden md:block h-24 bg-white/10" />
-            <Separator className="md:hidden bg-white/10" />
-            <div className="flex gap-8 md:gap-12 justify-center flex-wrap">
+            <Separator orientation="vertical" className="hidden md:block h-32 bg-white/10" />
+            <Separator className="md:hidden bg-white/10 w-20" />
+            {/* Sub scores */}
+            <div className="flex gap-10 md:gap-16 justify-center">
               <ScoreCard label="SEO" score={scores.seo} size="md" />
               <ScoreCard label="AEO" score={scores.aeo} size="md" />
               <ScoreCard label="GEO" score={scores.geo} size="md" />
@@ -133,6 +191,9 @@ export function AuditReport({ result, onNewAudit }: AuditReportProps) {
           <p className="text-gray-700 text-sm leading-relaxed">{result.executiveSummary}</p>
         </CardContent>
       </Card>
+
+      {/* Core Web Vitals */}
+      {result.pageSpeed && <CoreWebVitals ps={result.pageSpeed} />}
 
       {/* Critical Issues */}
       {result.criticalIssues.length > 0 && (

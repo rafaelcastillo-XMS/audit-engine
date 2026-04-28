@@ -1,4 +1,4 @@
-import type { RawData, AuditFinding } from './types'
+import type { RawData, AuditFinding, PageSpeedResult } from './types'
 
 let _id = 0
 const id = (prefix: string) => `${prefix}-${++_id}`
@@ -319,6 +319,137 @@ export function generateFindings(data: RawData): AuditFinding[] {
       title: 'Schema Present But No FAQ',
       description: 'Some structured data found, but FAQPage schema is missing.',
       recommendation: 'Add FAQPage schema to pages with Q&A content for better AI answer extraction.',
+      impact: 'medium',
+    })
+  }
+
+  return findings
+}
+
+// Google's Core Web Vitals thresholds
+// LCP: good <2500ms, poor >4000ms
+// CLS: good <0.1,   poor >0.25
+// INP: good <200ms, poor >500ms
+// FCP: good <1800ms, poor >3000ms
+// TTFB: good <800ms, poor >1800ms
+export function generatePageSpeedFindings(ps: PageSpeedResult): AuditFinding[] {
+  const findings: AuditFinding[] = []
+
+  if (ps.performanceScore < 50) {
+    findings.push({
+      id: 'psi-score',
+      category: 'seo',
+      severity: 'critical',
+      title: `Poor Performance Score (${ps.performanceScore}/100)`,
+      description: 'Google PageSpeed score is critically low. Page speed is a confirmed ranking factor.',
+      recommendation: 'Run a full Lighthouse audit and address the top opportunities — typically image optimization, render-blocking scripts, and server response time.',
+      impact: 'high',
+    })
+  } else if (ps.performanceScore < 90) {
+    findings.push({
+      id: 'psi-score',
+      category: 'seo',
+      severity: 'warning',
+      title: `Performance Needs Improvement (${ps.performanceScore}/100)`,
+      description: 'PageSpeed score has room for improvement. Faster pages rank better and convert more.',
+      recommendation: 'Review PageSpeed Insights for specific opportunities. Focus on LCP and TTFB first.',
+      impact: 'medium',
+    })
+  } else {
+    findings.push({
+      id: 'psi-score',
+      category: 'seo',
+      severity: 'pass',
+      title: `Strong Performance Score (${ps.performanceScore}/100)`,
+      description: 'Page loads fast on mobile — a positive ranking signal.',
+      impact: 'high',
+    })
+  }
+
+  if (ps.lcp > 4000) {
+    findings.push({
+      id: 'psi-lcp',
+      category: 'seo',
+      severity: 'critical',
+      title: `LCP Critical: ${(ps.lcp / 1000).toFixed(1)}s`,
+      description: 'Largest Contentful Paint is above 4s. This is a Core Web Vital and a direct ranking factor.',
+      recommendation: 'Optimize your hero image (use WebP, add preload), reduce server response time, and eliminate render-blocking resources.',
+      impact: 'high',
+    })
+  } else if (ps.lcp > 2500) {
+    findings.push({
+      id: 'psi-lcp',
+      category: 'seo',
+      severity: 'warning',
+      title: `LCP Needs Improvement: ${(ps.lcp / 1000).toFixed(1)}s`,
+      description: 'Largest Contentful Paint is between 2.5s–4s. Google target is under 2.5s.',
+      recommendation: 'Preload the LCP image element and ensure your server responds in under 600ms.',
+      impact: 'high',
+    })
+  }
+
+  if (ps.cls > 0.25) {
+    findings.push({
+      id: 'psi-cls',
+      category: 'seo',
+      severity: 'critical',
+      title: `CLS Critical: ${ps.cls}`,
+      description: 'Cumulative Layout Shift is very high — page elements are jumping around as it loads.',
+      recommendation: 'Set explicit width/height on images and embeds. Avoid inserting content above existing content after load.',
+      impact: 'high',
+    })
+  } else if (ps.cls > 0.1) {
+    findings.push({
+      id: 'psi-cls',
+      category: 'seo',
+      severity: 'warning',
+      title: `CLS Needs Improvement: ${ps.cls}`,
+      description: 'Layout shifts detected. Google target is CLS under 0.1.',
+      recommendation: 'Add size attributes to all images and reserve space for dynamic content (ads, embeds).',
+      impact: 'medium',
+    })
+  }
+
+  if (ps.ttfb > 1800) {
+    findings.push({
+      id: 'psi-ttfb',
+      category: 'seo',
+      severity: 'critical',
+      title: `TTFB Critical: ${ps.ttfb}ms`,
+      description: 'Server is taking over 1.8s to send the first byte. Likely slow hosting or no caching.',
+      recommendation: 'Upgrade hosting, enable server-side caching, or use a CDN (Cloudflare). Target is under 800ms.',
+      impact: 'high',
+    })
+  } else if (ps.ttfb > 800) {
+    findings.push({
+      id: 'psi-ttfb',
+      category: 'seo',
+      severity: 'warning',
+      title: `TTFB Slow: ${ps.ttfb}ms`,
+      description: 'Server response time is above 800ms. This delays every other resource on the page.',
+      recommendation: 'Enable caching headers, use a CDN, or consider a faster hosting provider.',
+      impact: 'medium',
+    })
+  }
+
+  if (ps.inp > 500) {
+    findings.push({
+      id: 'psi-inp',
+      category: 'seo',
+      severity: 'critical',
+      title: `INP Critical: ${ps.inp}ms`,
+      description: 'Interaction to Next Paint is above 500ms — the page feels unresponsive to user input.',
+      recommendation: 'Reduce JavaScript execution time. Break up long tasks and defer non-critical scripts.',
+      impact: 'high',
+    })
+  } else if (ps.inp > 200) {
+    findings.push({
+      id: 'psi-inp',
+      category: 'seo',
+      severity: 'warning',
+      title: `INP Needs Improvement: ${ps.inp}ms`,
+      description: 'Interaction to Next Paint is between 200ms–500ms. Target is under 200ms.',
+      recommendation: 'Profile JavaScript with Chrome DevTools and defer or remove heavy scripts.',
       impact: 'medium',
     })
   }

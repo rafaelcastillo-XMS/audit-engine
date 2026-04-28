@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 * {
   box-sizing: border-box;
 }
@@ -10,7 +12,31 @@ body {
   color: #0f0f13;
   -webkit-font-smoothing: antialiased;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+.dark body, body.dark {
+  background: #0f0f13;
+  color: #f0f0f5;
+}
+
+/* Dark mode overrides */
+.dark {
+  color-scheme: dark;
+}
+.dark .bg-white { background-color: #1a1a24 !important; }
+.dark .bg-white\/95 { background-color: rgba(15,15,19,0.95) !important; }
+.dark .border-gray-100 { border-color: #2a2a3a !important; }
+.dark .text-gray-900 { color: #f0f0f5 !important; }
+.dark .text-gray-700 { color: #c0c0d0 !important; }
+.dark .text-gray-500 { color: #8888a0 !important; }
+.dark .text-gray-400 { color: #6666888 !important; }
+.dark .bg-gray-50 { background-color: #1a1a24 !important; }
+.dark .bg-red-50 { background-color: rgba(239,68,68,0.1) !important; }
+.dark .bg-amber-50 { background-color: rgba(245,158,11,0.1) !important; }
+.dark .bg-green-50 { background-color: rgba(34,197,94,0.1) !important; }
+.dark [class*="border-gray"] { border-color: #2a2a3a !important; }
+.dark .shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.5) !important; }
 
 #root {
   min-height: 100vh;
@@ -29,4 +55,24 @@ body {
     linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+@media print {
+  .print\:hidden { display: none !important; }
+
+  body { background: #fff; }
+
+  /* Ocultar botones de acción del reporte */
+  button { display: none !important; }
+
+  /* Quitar sombras y bordes que no se ven bien en PDF */
+  * { box-shadow: none !important; }
+
+  /* Evitar cortes de página dentro de cards */
+  .space-y-8 > * { break-inside: avoid; }
+
+  /* Logo de la agencia al pie del PDF */
+  @page {
+    margin: 1.5cm;
+  }
 }

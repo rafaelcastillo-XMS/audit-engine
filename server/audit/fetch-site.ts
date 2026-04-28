@@ -9,13 +9,18 @@ export interface FetchResult {
   error?: string
 }
 
-const USER_AGENT =
-  'Mozilla/5.0 (compatible; XMSAuditBot/1.0; +https://xperienceaimarketing.com)'
+const BROWSER_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  'Accept-Language': 'en-US,en;q=0.9',
+  'Accept-Encoding': 'identity',
+  'Cache-Control': 'no-cache',
+}
 
 export async function fetchSite(url: string): Promise<FetchResult> {
   return new Promise((resolve) => {
     const protocol = url.startsWith('https://') ? https : http
-    const options = { headers: { 'User-Agent': USER_AGENT }, timeout: 15000 }
+    const options = { headers: BROWSER_HEADERS, timeout: 15000 }
 
     const req = protocol.get(url, options, (res) => {
       const statusCode = res.statusCode ?? 0

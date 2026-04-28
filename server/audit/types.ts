@@ -42,6 +42,15 @@ export interface RawData {
   url: string
 }
 
+export interface PageSpeedResult {
+  performanceScore: number
+  lcp: number
+  cls: number
+  inp: number
+  fcp: number
+  ttfb: number
+}
+
 export interface AuditResult {
   id: string
   url: string
@@ -53,4 +62,5 @@ export interface AuditResult {
   quickWins: AuditFinding[]
   opportunities: AuditFinding[]
   rawData: RawData
+  pageSpeed?: PageSpeedResult
 }
