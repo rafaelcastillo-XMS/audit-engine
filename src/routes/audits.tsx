@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Clock, ArrowRight } from 'lucide-react'
 import { getAllAudits } from '@/lib/audit/storage'
-import { scoreLabel } from '@/lib/utils'
+import { scoreLabel, scoreColor } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/audits')({
@@ -49,8 +49,13 @@ function AuditsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 flex-shrink-0">
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-gray-900">{a.scores.overall}</div>
+                  <div className="hidden sm:flex gap-3 text-xs font-semibold">
+                    <span className={scoreColor(a.scores.seo)}>SEO {a.scores.seo}</span>
+                    <span className={scoreColor(a.scores.aeo)}>AEO {a.scores.aeo}</span>
+                    <span className={scoreColor(a.scores.geo)}>GEO {a.scores.geo}</span>
+                  </div>
+                  <div className="text-right min-w-[3rem]">
+                    <div className={`text-lg font-bold ${scoreColor(a.scores.overall)}`}>{a.scores.overall}</div>
                     <div className="text-xs text-gray-400">{scoreLabel(a.scores.overall)}</div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-blue-500 transition-colors" />

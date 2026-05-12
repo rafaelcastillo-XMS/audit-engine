@@ -1,4 +1,4 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
+import { createRootRoute, Link, Outlet, useRouterState } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { Sun, Moon } from 'lucide-react'
 
@@ -8,35 +8,60 @@ export const Route = createRootRoute({
 
 function useDarkMode() {
   const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark')
-
   useEffect(() => {
     const root = document.documentElement
-    if (dark) {
-      root.classList.add('dark')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      root.classList.remove('dark')
-      localStorage.setItem('theme', 'light')
-    }
+    if (dark) { root.classList.add('dark'); localStorage.setItem('theme', 'dark') }
+    else { root.classList.remove('dark'); localStorage.setItem('theme', 'light') }
   }, [dark])
-
   return [dark, setDark] as const
 }
 
 function RootLayout() {
   const [dark, setDark] = useDarkMode()
+  const { location } = useRouterState()
+  const isHome = location.pathname === '/'
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    if (!isHome) { setScrolled(false); return }
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [isHome])
+
+  const transparent = isHome && !scrolled
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur-sm print:hidden">
+      <header className={`top-0 z-50 w-full transition-all duration-300 print:hidden ${
+        transparent
+          ? 'fixed bg-transparent border-transparent'
+          : 'sticky border-b border-gray-100 bg-white/95 backdrop-blur-sm'
+      }`}>
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <img src="/logo-horizontal.webp" alt="XMS Audit Lab" className="h-8 w-auto" />
+            <img
+              src="/logo-horizontal.webp"
+              alt="XMS Audit Lab"
+              className={`w-auto transition-all duration-300 ${transparent ? 'h-10' : 'h-8'}`}
+            />
           </Link>
-          <nav className="hidden sm:flex items-center gap-6 text-sm text-gray-500">
-            <a href="/#how-it-works" className="hover:text-gray-900 transition-colors">How it works</a>
-            <a href="/#analyze" className="hover:text-gray-900 transition-colors">What we analyze</a>
-            <Link to="/" className="text-blue-600 font-medium hover:text-blue-700 transition-colors">Analyze →</Link>
+          <nav className={`hidden sm:flex items-center gap-7 text-base font-medium transition-colors duration-300 ${
+            transparent ? 'text-white' : 'text-gray-500'
+          }`}>
+            <a
+              href="/#how-it-works"
+              className={`transition-colors ${transparent ? 'hover:text-white/70' : 'hover:text-gray-900'}`}
+            >
+              How it works
+            </a>
+            <a
+              href="/#analyze"
+              className={`transition-colors ${transparent ? 'hover:text-white/70' : 'hover:text-gray-900'}`}
+            >
+              What we analyze
+            </a>
           </nav>
         </div>
       </header>

@@ -32,20 +32,20 @@ export function scoreLabel(score: number): string {
 
 export function severityColor(severity: string): string {
   switch (severity) {
-    case 'critical': return 'bg-red-100 text-red-700 border-red-200'
-    case 'warning': return 'bg-yellow-100 text-yellow-700 border-yellow-200'
-    case 'info': return 'bg-blue-100 text-blue-700 border-blue-200'
-    case 'pass': return 'bg-green-100 text-green-700 border-green-200'
-    default: return 'bg-gray-100 text-gray-700 border-gray-200'
+    case 'critical': return 'bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/50'
+    case 'warning':  return 'bg-yellow-100 dark:bg-yellow-950/40 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800/50'
+    case 'info':     return 'bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/50'
+    case 'pass':     return 'bg-green-100 dark:bg-green-950/40 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/50'
+    default:         return 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700'
   }
 }
 
 export function impactBadge(impact: string): string {
   switch (impact) {
-    case 'high': return 'bg-red-50 text-red-600'
-    case 'medium': return 'bg-orange-50 text-orange-600'
-    case 'low': return 'bg-gray-50 text-gray-600'
-    default: return 'bg-gray-50 text-gray-600'
+    case 'high':   return 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400'
+    case 'medium': return 'bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400'
+    case 'low':    return 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+    default:       return 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
   }
 }
 

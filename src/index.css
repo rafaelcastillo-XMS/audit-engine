@@ -11,7 +11,7 @@ body {
   background: #ffffff;
   color: #0f0f13;
   -webkit-font-smoothing: antialiased;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -30,8 +30,13 @@ body {
 .dark .text-gray-900 { color: #f0f0f5 !important; }
 .dark .text-gray-700 { color: #c0c0d0 !important; }
 .dark .text-gray-500 { color: #8888a0 !important; }
-.dark .text-gray-400 { color: #6666888 !important; }
+.dark .text-gray-600 { color: #a0a0b8 !important; }
+.dark .text-gray-400 { color: #666888 !important; }
+.dark .text-gray-800 { color: #d8d8e8 !important; }
 .dark .bg-gray-50 { background-color: #1a1a24 !important; }
+.dark .bg-gray-100 { background-color: #1e1e2a !important; }
+.dark .bg-blue-50 { background-color: rgba(59,130,246,0.08) !important; }
+.dark .bg-orange-50 { background-color: rgba(249,115,22,0.08) !important; }
 .dark .bg-red-50 { background-color: rgba(239,68,68,0.1) !important; }
 .dark .bg-amber-50 { background-color: rgba(245,158,11,0.1) !important; }
 .dark .bg-green-50 { background-color: rgba(34,197,94,0.1) !important; }
@@ -55,6 +60,11 @@ body {
     linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+.hero-dots {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 @media print {

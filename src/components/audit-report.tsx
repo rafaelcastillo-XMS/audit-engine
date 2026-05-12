@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { FileDown, ExternalLink, AlertCircle, Lightbulb, TrendingUp, Info, Wrench, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,10 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScoreCard } from '@/components/score-card'
 import { LeadModal } from '@/components/lead-modal'
 import type { AuditResult, AuditFinding, PageSpeedResult } from '@/lib/audit/types'
-import { severityColor, impactBadge, cn } from '@/lib/utils'
+import { severityColor, impactBadge } from '@/lib/utils'
+
+const PdfExportButton = lazy(() => import('@/components/pdf-export-button'))
 
 interface AuditReportProps {
   result: AuditResult
+  mode?: 'public' | 'internal'
 }
 
 // Google CWV thresholds
@@ -30,9 +33,9 @@ function cwvStatus(metric: 'lcp' | 'cls' | 'inp' | 'fcp' | 'ttfb', value: number
 }
 
 const cwvColors = {
-  good: 'text-green-600 bg-green-50 border-green-200',
-  'needs-improvement': 'text-amber-600 bg-amber-50 border-amber-200',
-  poor: 'text-red-600 bg-red-50 border-red-200',
+  good:               'text-green-600 dark:text-green-400 bg-green-50 border-green-200 dark:border-green-800/40',
+  'needs-improvement':'text-amber-600 dark:text-amber-400 bg-amber-50 border-amber-200 dark:border-amber-800/40',
+  poor:               'text-red-600 dark:text-red-400 bg-red-50 border-red-200 dark:border-red-800/40',
 }
 
 function CoreWebVitals({ ps }: { ps: PageSpeedResult }) {
@@ -46,7 +49,7 @@ function CoreWebVitals({ ps }: { ps: PageSpeedResult }) {
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-gray-800 text-sm">
+        <CardTitle className="flex items-center gap-2 text-gray-800 dark:text-gray-200 text-sm">
           <TrendingUp className="w-4 h-4 text-blue-500" />
           Core Web Vitals
           <span className={`ml-auto text-xs font-bold px-2 py-0.5 rounded-full border ${
@@ -82,7 +85,7 @@ const severityIcon = {
   pass: Check,
 }
 
-function FindingRow({ finding }: { finding: AuditFinding }) {
+function FindingRow({ finding, showRecommendation = false }: { finding: AuditFinding; showRecommendation?: boolean }) {
   const Icon = severityIcon[finding.severity]
   return (
     <div className={`flex gap-3 p-3 rounded-lg border text-sm ${severityColor(finding.severity)}`}>
@@ -90,8 +93,8 @@ function FindingRow({ finding }: { finding: AuditFinding }) {
       <div className="flex-1 min-w-0">
         <div className="font-medium">{finding.title}</div>
         <div className="text-xs mt-0.5 opacity-80">{finding.description}</div>
-        {finding.recommendation && finding.severity !== 'pass' && (
-          <div className="mt-2 flex gap-1.5 items-start rounded-md bg-white/60 border border-current/10 px-2.5 py-2">
+        {showRecommendation && finding.recommendation && finding.severity !== 'pass' && (
+          <div className="mt-2 flex gap-1.5 items-start rounded-md bg-white/60 dark:bg-black/20 border border-current/10 px-2.5 py-2">
             <Lightbulb className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-500" />
             <span className="text-xs font-medium">{finding.recommendation}</span>
           </div>
@@ -104,7 +107,7 @@ function FindingRow({ finding }: { finding: AuditFinding }) {
   )
 }
 
-function FindingsList({ findings, emptyLabel }: { findings: AuditFinding[]; emptyLabel: string }) {
+function FindingsList({ findings, emptyLabel, showRecommendation }: { findings: AuditFinding[]; emptyLabel: string; showRecommendation?: boolean }) {
   if (findings.length === 0) {
     return (
       <div className="text-center py-8 text-gray-400 text-sm">
@@ -115,15 +118,16 @@ function FindingsList({ findings, emptyLabel }: { findings: AuditFinding[]; empt
   }
   return (
     <div className="space-y-2">
-      {findings.map(f => <FindingRow key={f.id} finding={f} />)}
+      {findings.map(f => <FindingRow key={f.id} finding={f} showRecommendation={showRecommendation} />)}
     </div>
   )
 }
 
-export function AuditReport({ result }: AuditReportProps) {
+export function AuditReport({ result, mode = 'public' }: AuditReportProps) {
   const [showLeadModal, setShowLeadModal] = useState(false)
   const { scores, rawData } = result
   const domain = new URL(result.url).hostname
+  const showRecommendation = mode === 'internal'
 
   const seoFindings = result.findings.filter(f => f.category === 'seo')
   const aeoFindings = result.findings.filter(f => f.category === 'aeo')
@@ -134,7 +138,14 @@ export function AuditReport({ result }: AuditReportProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Audit Report</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gray-900">Audit Report</h1>
+            {mode === 'internal' && (
+              <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 border border-blue-200 dark:border-blue-800/50 px-2 py-0.5 rounded-full">
+                Internal
+              </span>
+            )}
+          </div>
           <a
             href={result.url}
             target="_blank"
@@ -149,18 +160,26 @@ export function AuditReport({ result }: AuditReportProps) {
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button
-            size="sm"
-            onClick={() => setShowLeadModal(true)}
-            className="gap-1.5 bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
-          >
-            <Wrench className="w-3.5 h-3.5" />
-            Fix My Site
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => window.print()} className="gap-1.5">
-            <FileDown className="w-3.5 h-3.5" />
-            Export PDF
-          </Button>
+          {mode === 'public' && (
+            <Button
+              size="sm"
+              onClick={() => setShowLeadModal(true)}
+              className="gap-1.5 bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+            >
+              <Wrench className="w-3.5 h-3.5" />
+              Fix My Site
+            </Button>
+          )}
+          {mode === 'internal' && (
+            <Suspense fallback={
+              <Button variant="outline" size="sm" disabled className="gap-1.5">
+                <FileDown className="w-3.5 h-3.5" />
+                Preparing PDF…
+              </Button>
+            }>
+              <PdfExportButton result={result} />
+            </Suspense>
+          )}
         </div>
       </div>
 
@@ -197,7 +216,7 @@ export function AuditReport({ result }: AuditReportProps) {
 
       {/* Critical Issues */}
       {result.criticalIssues.length > 0 && (
-        <Card className="border-red-100">
+        <Card className="border-red-100 dark:border-red-900/40">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-red-600">
               <AlertCircle className="w-4.5 h-4.5" />
@@ -205,13 +224,13 @@ export function AuditReport({ result }: AuditReportProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <FindingsList findings={result.criticalIssues} emptyLabel="No critical issues found." />
+            <FindingsList findings={result.criticalIssues} emptyLabel="No critical issues found." showRecommendation={showRecommendation} />
           </CardContent>
         </Card>
       )}
 
       {/* Quick Wins */}
-      <Card className="border-amber-100">
+      <Card className="border-amber-100 dark:border-amber-900/40">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-amber-600">
             <Lightbulb className="w-4.5 h-4.5" />
@@ -219,12 +238,12 @@ export function AuditReport({ result }: AuditReportProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <FindingsList findings={result.quickWins} emptyLabel="No quick wins identified — good job!" />
+          <FindingsList findings={result.quickWins} emptyLabel="No quick wins identified — good job!" showRecommendation={showRecommendation} />
         </CardContent>
       </Card>
 
       {/* Opportunities */}
-      <Card className="border-blue-100">
+      <Card className="border-blue-100 dark:border-blue-900/40">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-blue-600">
             <TrendingUp className="w-4.5 h-4.5" />
@@ -232,13 +251,13 @@ export function AuditReport({ result }: AuditReportProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <FindingsList findings={result.opportunities} emptyLabel="No additional opportunities at this time." />
+          <FindingsList findings={result.opportunities} emptyLabel="No additional opportunities at this time." showRecommendation={showRecommendation} />
         </CardContent>
       </Card>
 
       {/* Technical Findings by Category */}
       <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Technical Findings</h2>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Technical Findings</h2>
         <Tabs defaultValue="seo">
           <TabsList className="mb-4">
             <TabsTrigger value="seo">SEO ({seoFindings.length})</TabsTrigger>
@@ -247,17 +266,17 @@ export function AuditReport({ result }: AuditReportProps) {
           </TabsList>
           <TabsContent value="seo">
             <div className="space-y-2">
-              {seoFindings.map(f => <FindingRow key={f.id} finding={f} />)}
+              {seoFindings.map(f => <FindingRow key={f.id} finding={f} showRecommendation={showRecommendation} />)}
             </div>
           </TabsContent>
           <TabsContent value="aeo">
             <div className="space-y-2">
-              {aeoFindings.map(f => <FindingRow key={f.id} finding={f} />)}
+              {aeoFindings.map(f => <FindingRow key={f.id} finding={f} showRecommendation={showRecommendation} />)}
             </div>
           </TabsContent>
           <TabsContent value="geo">
             <div className="space-y-2">
-              {geoFindings.map(f => <FindingRow key={f.id} finding={f} />)}
+              {geoFindings.map(f => <FindingRow key={f.id} finding={f} showRecommendation={showRecommendation} />)}
             </div>
           </TabsContent>
         </Tabs>
@@ -275,7 +294,7 @@ export function AuditReport({ result }: AuditReportProps) {
                 View raw audit data
               </AccordionTrigger>
               <AccordionContent>
-                <pre className="text-xs bg-gray-50 border border-gray-100 rounded-lg p-4 overflow-auto max-h-80 text-gray-600">
+                <pre className="text-xs bg-gray-50 dark:bg-gray-900/60 border border-gray-100 rounded-lg p-4 overflow-auto max-h-80 text-gray-600 dark:text-gray-400">
                   {JSON.stringify(rawData, null, 2)}
                 </pre>
               </AccordionContent>

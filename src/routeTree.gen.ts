@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as InternalRouteImport } from './routes/internal'
 import { Route as AuditsRouteImport } from './routes/audits'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuditAuditIdRouteImport } from './routes/audit.$auditId'
 
+const InternalRoute = InternalRouteImport.update({
+  id: '/internal',
+  path: '/internal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuditsRoute = AuditsRouteImport.update({
   id: '/audits',
   path: '/audits',
@@ -32,35 +38,46 @@ const AuditAuditIdRoute = AuditAuditIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/audits': typeof AuditsRoute
+  '/internal': typeof InternalRoute
   '/audit/$auditId': typeof AuditAuditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/audits': typeof AuditsRoute
+  '/internal': typeof InternalRoute
   '/audit/$auditId': typeof AuditAuditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/audits': typeof AuditsRoute
+  '/internal': typeof InternalRoute
   '/audit/$auditId': typeof AuditAuditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/audits' | '/audit/$auditId'
+  fullPaths: '/' | '/audits' | '/internal' | '/audit/$auditId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/audits' | '/audit/$auditId'
-  id: '__root__' | '/' | '/audits' | '/audit/$auditId'
+  to: '/' | '/audits' | '/internal' | '/audit/$auditId'
+  id: '__root__' | '/' | '/audits' | '/internal' | '/audit/$auditId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuditsRoute: typeof AuditsRoute
+  InternalRoute: typeof InternalRoute
   AuditAuditIdRoute: typeof AuditAuditIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/internal': {
+      id: '/internal'
+      path: '/internal'
+      fullPath: '/internal'
+      preLoaderRoute: typeof InternalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/audits': {
       id: '/audits'
       path: '/audits'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuditsRoute: AuditsRoute,
+  InternalRoute: InternalRoute,
   AuditAuditIdRoute: AuditAuditIdRoute,
 }
 export const routeTree = rootRouteImport
