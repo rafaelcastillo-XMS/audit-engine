@@ -34,22 +34,20 @@ function RootLayout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className={`top-0 z-50 w-full transition-all duration-300 print:hidden ${
-        transparent
-          ? 'fixed bg-transparent border-transparent'
-          : 'sticky border-b border-gray-100 bg-white/95 backdrop-blur-sm'
-      }`}>
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+      <header className={`top-0 z-50 w-full transition-all duration-300 print:hidden ${transparent
+        ? 'fixed bg-transparent border-transparent'
+        : 'sticky border-b border-gray-100 bg-white/95 backdrop-blur-sm'
+        }`}>
+        <div className="max-w-6xl mx-auto py-1 px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center">
             <img
-              src="/logo-horizontal.webp"
+              src={transparent ? '/LOGO - BLACK BACKGROUND.webp' : '/logo-horizontal.webp'}
               alt="XMS Audit Lab"
-              className={`w-auto transition-all duration-300 ${transparent ? 'h-10' : 'h-8'}`}
+              className={`w-auto transition-all duration-300 ${transparent ? 'h-14' : 'h-12'}`}
             />
           </Link>
-          <nav className={`hidden sm:flex items-center gap-7 text-base font-medium transition-colors duration-300 ${
-            transparent ? 'text-white' : 'text-gray-500'
-          }`}>
+          <nav className={`hidden sm:flex items-center gap-7 text-base font-medium transition-colors duration-300 ${transparent ? 'text-white' : 'text-gray-500'
+            }`}>
             <a
               href="/#how-it-works"
               className={`transition-colors ${transparent ? 'hover:text-white/70' : 'hover:text-gray-900'}`}

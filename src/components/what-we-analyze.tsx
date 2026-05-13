@@ -1,130 +1,82 @@
-import { Search, MessageSquare, Globe } from 'lucide-react'
-
-const categories = [
+const cards = [
   {
-    icon: Search,
+    span: 'col-span-2 lg:col-span-4',
     label: 'SEO',
-    color: 'blue',
+    labelColor: 'text-blue-500',
     title: 'Technical SEO',
-    subtitle: 'Foundation for search visibility',
-    items: [
-      'Title tag & meta description',
-      'Heading structure (H1–H6)',
-      'Canonical tags',
-      'Indexability & robots meta',
-      'HTTPS & security',
-      'XML sitemap & robots.txt',
-      'Internal & external links',
-      'Word count & content depth',
-    ],
+    description: 'Core signals that determine how search engines crawl, index, and rank your pages.',
   },
   {
-    icon: MessageSquare,
+    span: 'col-span-2 ',
     label: 'AEO',
-    color: 'purple',
-    title: 'Answer Engine Optimization',
-    subtitle: 'Built for featured snippets & voice',
-    items: [
-      'FAQ schema markup',
-      'Question-based headings',
-      'Concise answer paragraphs',
-      'Featured snippet potential',
-      'Structured data presence',
-      'Content hierarchy clarity',
-      'Q&A content patterns',
-      'Open Graph completeness',
-    ],
+    labelColor: 'text-purple-500',
+    title: 'Answer Engine',
+    description: 'Optimized for featured snippets, voice results, and AI-generated summaries.',
   },
   {
-    icon: Globe,
+    span: 'col-span-2',
     label: 'GEO',
-    color: 'amber',
-    title: 'Generative Engine Optimization',
-    subtitle: 'Optimized for AI-generated answers',
-    items: [
-      'llms.txt file detection',
-      'AI crawler accessibility',
-      'Schema & structured data',
-      'Author & brand trust signals',
-      'Outbound citation links',
-      'Entity & brand clarity',
-      'Contact & About pages',
-      'AI search readiness',
-    ],
+    labelColor: 'text-amber-500',
+    title: 'AI Visibility',
+    description: 'How well ChatGPT, Claude, and Gemini can find and recommend your business.',
+  },
+  {
+    span: 'col-span-2',
+    label: 'Schema',
+    labelColor: 'text-emerald-500',
+    title: 'Structured Data',
+    description: 'Markup that AI models read directly.',
+  },
+  {
+    span: 'col-span-2',
+    label: 'Report',
+    labelColor: 'text-cyan-600',
+    title: 'Full Audit Report',
+    description: 'SEO, AEO & GEO in one unified score with prioritized fixes, in seconds.',
   },
 ]
 
-const colorMap: Record<string, { bg: string; text: string; border: string; icon: string; dot: string }> = {
-  blue: {
-    bg: 'bg-blue-50',
-    text: 'text-blue-700',
-    border: 'border-blue-100',
-    icon: 'bg-blue-100 text-blue-600',
-    dot: 'bg-blue-500',
-  },
-  purple: {
-    bg: 'bg-purple-50',
-    text: 'text-purple-700',
-    border: 'border-purple-100',
-    icon: 'bg-purple-100 text-purple-600',
-    dot: 'bg-purple-500',
-  },
-  amber: {
-    bg: 'bg-amber-50',
-    text: 'text-amber-700',
-    border: 'border-amber-100',
-    icon: 'bg-amber-100 text-amber-600',
-    dot: 'bg-amber-500',
-  },
-}
-
 export function WhatWeAnalyze() {
   return (
-    <section id="analyze" className="py-20 px-4">
+    <section id="analyze" className="py-24 px-4 bg-slate-50 dark:bg-[#060d20]">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-14">
-          <span className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3 block">
-            Coverage
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            What We Analyze
-          </h2>
-          <p className="text-gray-500 max-w-xl mx-auto">
-            Three dimensions of visibility — traditional search, answer engines, and AI-generated results.
+
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3 block">
+              Coverage
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+              What We Analyze
+            </h2>
+          </div>
+          <p className="text-base text-gray-500 dark:text-gray-400 leading-relaxed max-w-sm sm:text-right">
+            Five dimensions of visibility — from traditional search to AI-generated answers.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {categories.map((cat) => {
-            const Icon = cat.icon
-            const c = colorMap[cat.color]
-            return (
-              <div
-                key={cat.label}
-                className={`rounded-xl border ${c.border} ${c.bg} p-6`}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${c.icon}`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className={`text-xs font-bold uppercase tracking-widest ${c.text}`}>{cat.label}</span>
-                    <div className="text-sm font-semibold text-gray-900">{cat.title}</div>
-                  </div>
-                </div>
-                <p className={`text-xs font-medium ${c.text} mb-4`}>{cat.subtitle}</p>
-                <ul className="space-y-2">
-                  {cat.items.map((item) => (
-                    <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
-                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${c.dot}`} />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+          {cards.map((card) => (
+            <div
+              key={card.label}
+              className={`${card.span} bg-white dark:bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col`}
+            >
+              {/* Placeholder */}
+              <div className="bg-gray-100 h-44" />
+
+              {/* Text */}
+              <div className="px-5 py-5">
+                <span className={`text-xs font-semibold uppercase tracking-widest block mb-1 ${card.labelColor}`}>
+                  {card.label}
+                </span>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">{card.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{card.description}</p>
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
+
       </div>
     </section>
   )

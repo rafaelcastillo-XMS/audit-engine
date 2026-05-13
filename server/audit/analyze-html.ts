@@ -73,7 +73,7 @@ export async function analyzeHtml(html: string, pageUrl: string): Promise<RawDat
       if (aiCrawlers.some(bot => line.includes(`user-agent: ${bot.toLowerCase()}`))) {
         inDisallowBlock = true
       }
-      if (inDisallowBlock && line.startsWith('disallow: /') && !line.includes('disallow: /\n')) {
+      if (inDisallowBlock && line.startsWith('disallow: /')) {
         aiCrawlerBlocked = true
         break
       }

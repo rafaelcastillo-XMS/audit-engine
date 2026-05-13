@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 import { Sparkles, ChevronDown, Check } from 'lucide-react'
 import { AuditUrlForm } from '@/components/audit-url-form'
 import { HowItWorks } from '@/components/how-it-works'
@@ -9,6 +10,37 @@ import { FaqSection } from '@/components/faq-section'
 export const Route = createFileRoute('/')({
   component: HomePage,
 })
+
+const HERO_IMAGES = [
+  { src: '/Hero_Singleman.png', alt: 'Person using XMS Audit Lab on smartphone' },
+  { src: '/Hero_womanTel.png', alt: 'Woman using XMS Audit Lab on phone' },
+]
+
+function HeroCarousel() {
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCurrent(i => (i + 1) % HERO_IMAGES.length)
+    }, 4000)
+    return () => clearInterval(id)
+  }, [])
+
+  return (
+    <div className="hidden lg:block relative">
+      {HERO_IMAGES.map((img, i) => (
+        <img
+          key={img.src}
+          src={img.src}
+          alt={img.alt}
+          className={`absolute bottom-0 right-0 w-auto h-[90%] max-w-none transition-opacity duration-700 ${
+            i === current ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      ))}
+    </div>
+  )
+}
 
 function MockReportCard() {
   return (
@@ -139,14 +171,8 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Right — 60%, image anchored to bottom, overflows up (section clips it) */}
-          <div className="hidden lg:block relative">
-            <img
-              src="/Hero_Singleman.png"
-              alt="Person using XMS Audit Lab on smartphone"
-              className="absolute bottom-0 right-0 w-auto h-[90%] max-w-none"
-            />
-          </div>
+          {/* Right — 60%, carousel anchored to bottom */}
+          <HeroCarousel />
         </div>
       </section>
 
@@ -166,7 +192,7 @@ function HomePage() {
           </div>
 
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-black text-gray-900 mb-2">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
               Analyze Any Website — Free
             </h2>
             <p className="text-gray-500">
@@ -176,7 +202,7 @@ function HomePage() {
 
           <div className="bg-white border border-gray-200 rounded-2xl p-3 shadow-lg shadow-gray-100/50">
             <AuditUrlForm
-              onNavigate={(id) => navigate({ to: '/audit/$auditId', params: { auditId: id } })}
+              onNavigate={(id) => navigate({ to: '/audit/$auditId', params: { auditId: id } })} 
             />
           </div>
           <p className="mt-3 text-center text-xs text-gray-400">
