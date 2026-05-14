@@ -15,7 +15,9 @@ const PORT = process.env.PORT ?? 3001
 const isProd = process.env.NODE_ENV === 'production'
 
 const allowedOrigins = isProd
-  ? [process.env.APP_URL].filter(Boolean) as string[]
+  ? process.env.APP_URL
+    ? [process.env.APP_URL]
+    : true  // same-origin only (frontend served by same Express)
   : ['http://localhost:5173', 'http://localhost:4173']
 
 app.use(cors({ origin: allowedOrigins }))
