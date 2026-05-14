@@ -14,4 +14,4 @@ EXPOSE 3001
 ENV NODE_ENV=production
 ENV PORT=3001
 
-CMD ["./node_modules/.bin/tsx", "server/index.ts"]
+CMD ["npm", "start"]
