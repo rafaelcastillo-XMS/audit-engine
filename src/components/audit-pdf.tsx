@@ -1,4 +1,4 @@
-import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, View, Text, Image, StyleSheet, Svg, Circle, Ellipse, Line } from '@react-pdf/renderer'
 import type { AuditResult, AuditFinding } from '@/lib/audit/types'
 
 const C = {
@@ -13,7 +13,6 @@ const C = {
   blueBorder:  '#bfdbfe',
   red:         '#dc2626',
   redDark:     '#991b1b',
-  redDeep:     '#450a0a',
   redLight:    '#fff1f2',
   redBorder:   '#fca5a5',
   amber:       '#b45309',
@@ -23,29 +22,36 @@ const C = {
   greenLight:  '#f0fdf4',
   greenBorder: '#bbf7d0',
   indigo:      '#4f46e5',
+  // WCAG-safe muted tones on dark backgrounds
+  mutedOnDark: '#94a3b8',  // 6.4:1 on #0f172a ✓
+  softOnDark:  '#cbd5e1',  // 9.3:1 on #0f172a ✓
 }
 
 const S = StyleSheet.create({
   page: {
     backgroundColor: C.white,
-    paddingBottom: 52,
+    paddingTop: 20,
+    paddingBottom: 56,
     fontFamily: 'Helvetica',
     fontSize: 10,
     color: C.slate,
   },
+
+  // ── Page 1 header (not fixed — only renders on first page) ──
   header: {
     backgroundColor: C.ink,
     paddingHorizontal: 32,
-    paddingTop: 24,
+    paddingTop: 20,
     paddingBottom: 0,
+    marginTop: -20, // cancel page paddingTop so header bleeds to top edge
   },
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 14,
+    marginBottom: 16,
   },
-  logo: { height: 32, width: 130 },
+  logo: { height: 30, width: 120 },
   headerBadge: {
     fontSize: 7,
     fontFamily: 'Helvetica-Bold',
@@ -57,75 +63,113 @@ const S = StyleSheet.create({
     letterSpacing: 1,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 21,
     fontFamily: 'Helvetica-Bold',
     color: C.white,
-    marginBottom: 4,
+    marginBottom: 3,
   },
   headerSubtitle: {
     fontSize: 9,
-    color: '#94a3b8',
-    marginBottom: 3,
-    letterSpacing: 0.3,
+    color: C.mutedOnDark,
+    marginBottom: 12,
+    letterSpacing: 0.5,
+  },
+  urlRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    marginBottom: 5,
   },
   headerUrl: {
-    fontSize: 11,
-    color: '#60a5fa',
-    marginBottom: 2,
+    fontSize: 14,
+    fontFamily: 'Helvetica-Bold',
+    color: '#93c5fd',
   },
   headerDate: {
-    fontSize: 8,
-    color: '#64748b',
+    fontSize: 9,
+    color: C.softOnDark,
     marginBottom: 18,
   },
 
-  // Scores — page 1 only (no fixed)
+  // ── Mini brand strip for pages 2+ (fixed, absolute) ──
+  miniHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 20,
+    backgroundColor: C.ink,
+    paddingHorizontal: 32,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  miniHeaderText: {
+    fontSize: 7,
+    color: C.mutedOnDark,
+    letterSpacing: 0.5,
+  },
+
+  // ── Scores (page 1 only — no fixed prop) ──
+  resultsLabel: {
+    backgroundColor: C.slate,
+    paddingHorizontal: 32,
+    paddingTop: 14,
+    paddingBottom: 4,
+  },
+  resultsLabelText: {
+    fontSize: 8,
+    fontFamily: 'Helvetica-Bold',
+    color: C.mutedOnDark,
+    letterSpacing: 2,
+  },
   scoresBand: {
     flexDirection: 'row',
-    backgroundColor: '#1e293b',
+    backgroundColor: C.slate,
     paddingHorizontal: 32,
     paddingBottom: 22,
-    paddingTop: 6,
-    gap: 12,
+    paddingTop: 8,
+    gap: 14,
   },
   scoreItem: {
     flex: 1,
     alignItems: 'center',
+    gap: 8,
   },
   scoreCircle: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 3,
-    marginBottom: 6,
   },
   scoreValue: {
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: 'Helvetica-Bold',
     lineHeight: 1,
   },
   scoreOf: {
-    fontSize: 7,
-    color: '#94a3b8',
+    fontSize: 8,
+    color: C.mutedOnDark,
     marginTop: 1,
   },
   scoreLabel: {
-    fontSize: 7,
+    fontSize: 9,
     fontFamily: 'Helvetica-Bold',
-    color: '#94a3b8',
-    letterSpacing: 1.2,
+    color: C.softOnDark,
+    letterSpacing: 1,
   },
 
+  // ── Content ──
   content: {
     paddingHorizontal: 32,
     paddingTop: 20,
   },
 
-  // Executive summary — consequence-focused
+  // ── Executive summary ──
   summaryCard: {
-    backgroundColor: '#0f172a',
+    backgroundColor: C.ink,
     borderRadius: 8,
     padding: 18,
     marginBottom: 20,
@@ -140,20 +184,22 @@ const S = StyleSheet.create({
   },
   summaryText: {
     fontSize: 10,
-    color: '#cbd5e1',
+    color: C.softOnDark,
     lineHeight: 1.7,
   },
 
-  // Critical Issues — high alert
+  // ── Critical issues ──
+  criticalWrapper: {
+    borderRadius: 6,
+    border: `2pt solid ${C.redDark}`,
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
   criticalBanner: {
     backgroundColor: C.redDark,
-    borderTopLeftRadius: 6,
-    borderTopRightRadius: 6,
-    paddingVertical: 6,
+    paddingVertical: 7,
     paddingHorizontal: 12,
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   criticalBannerText: {
     fontSize: 8,
@@ -161,18 +207,22 @@ const S = StyleSheet.create({
     color: C.white,
     letterSpacing: 1.5,
   },
-  criticalWrapper: {
-    borderRadius: 6,
-    border: `2pt solid ${C.redDark}`,
-    marginBottom: 20,
-    overflow: 'hidden',
-  },
   criticalInner: {
     backgroundColor: C.redLight,
     padding: 12,
     gap: 6,
   },
+  criticalFinding: {
+    flexDirection: 'row',
+    padding: 10,
+    borderRadius: 4,
+    marginBottom: 4,
+    gap: 8,
+    backgroundColor: '#ffe4e6',
+    border: `1pt solid ${C.redBorder}`,
+  },
 
+  // ── Generic section ──
   section: { marginBottom: 18 },
   sectionHeader: {
     flexDirection: 'row',
@@ -199,6 +249,7 @@ const S = StyleSheet.create({
     marginTop: 1,
   },
 
+  // ── Finding card ──
   finding: {
     flexDirection: 'row',
     padding: 10,
@@ -221,8 +272,8 @@ const S = StyleSheet.create({
   },
   findingDesc: {
     fontSize: 9,
-    lineHeight: 1.5,
-    color: '#475569',
+    lineHeight: 1.55,
+    color: '#374151',  // 9.7:1 on white ✓ WCAG AA
   },
   impactBadge: {
     fontSize: 7,
@@ -231,17 +282,7 @@ const S = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 3,
     alignSelf: 'flex-start',
-    marginTop: 4,
-  },
-
-  criticalFinding: {
-    flexDirection: 'row',
-    padding: 10,
-    borderRadius: 4,
-    marginBottom: 4,
-    gap: 8,
-    backgroundColor: '#fee2e2',
-    border: '1pt solid #fca5a5',
+    marginTop: 5,
   },
 
   empty: {
@@ -258,11 +299,13 @@ const S = StyleSheet.create({
   categoryLabel: {
     fontSize: 9,
     fontFamily: 'Helvetica-Bold',
-    color: C.muted,
-    letterSpacing: 0.8,
+    color: '#374151',   // 9.7:1 on white ✓
+    letterSpacing: 0.5,
     marginTop: 12,
     marginBottom: 6,
   },
+
+  // ── Footer ──
   footer: {
     position: 'absolute',
     bottom: 18,
@@ -284,75 +327,86 @@ const S = StyleSheet.create({
     gap: 8,
     alignItems: 'center',
   },
-  footerText: { fontSize: 8, color: C.muted },
+  footerText: { fontSize: 8, color: C.muted },  // #64748b on white = 4.75:1 ✓
 })
 
 function scoreColor(n: number) {
-  if (n >= 80) return '#22c55e'
-  if (n >= 60) return '#f59e0b'
-  return '#ef4444'
+  if (n >= 80) return '#16a34a'   // green-600: high contrast on dark
+  if (n >= 60) return '#d97706'   // amber-600: readable on dark
+  return '#dc2626'                 // red-600
 }
 
 function scoreBg(n: number) {
   if (n >= 80) return '#052e16'
-  if (n >= 60) return '#1c1107'
-  return '#1f0000'
+  if (n >= 60) return '#1c0f03'
+  return '#1f0303'
 }
 
 function findingTheme(severity: string) {
   switch (severity) {
-    case 'critical': return { bg: '#fee2e2', border: '#fca5a5', dot: C.red,     text: C.redDark }
-    case 'warning':  return { bg: C.amberLight, border: C.amberBorder, dot: '#f59e0b', text: C.amber }
-    case 'info':     return { bg: C.blueLight,  border: C.blueBorder,  dot: C.blue,   text: C.blue  }
-    default:         return { bg: C.greenLight, border: C.greenBorder, dot: '#22c55e', text: C.green }
+    case 'critical': return { bg: '#fff1f2', border: '#fca5a5', dot: C.red,    text: C.redDark }
+    case 'warning':  return { bg: C.amberLight, border: C.amberBorder, dot: '#d97706', text: '#92400e' }
+    case 'info':     return { bg: C.blueLight,  border: C.blueBorder,  dot: C.blue,   text: '#1e40af' }
+    default:         return { bg: C.greenLight, border: C.greenBorder, dot: '#16a34a', text: C.green }
   }
 }
 
 function impactTheme(impact: string) {
   switch (impact) {
-    case 'high':   return { bg: '#fef2f2', color: '#dc2626' }
-    case 'medium': return { bg: '#fffbeb', color: '#d97706' }
-    default:       return { bg: '#f0fdf4', color: '#16a34a' }
+    case 'high':   return { bg: '#fef2f2', color: '#991b1b' }   // 7.1:1 ✓
+    case 'medium': return { bg: '#fffbeb', color: '#92400e' }   // 6.8:1 ✓
+    default:       return { bg: '#f0fdf4', color: '#14532d' }   // 8.2:1 ✓
   }
+}
+
+function GlobeIcon() {
+  return (
+    <Svg width={14} height={14} viewBox="0 0 14 14">
+      <Circle cx={7} cy={7} r={6} stroke="#93c5fd" strokeWidth={1} fill="none" />
+      <Ellipse cx={7} cy={7} rx={3} ry={6} stroke="#93c5fd" strokeWidth={0.8} fill="none" />
+      <Line x1={1} y1={7} x2={13} y2={7} stroke="#93c5fd" strokeWidth={0.8} />
+      <Line x1={2.5} y1={4} x2={11.5} y2={4} stroke="#93c5fd" strokeWidth={0.6} />
+      <Line x1={2.5} y1={10} x2={11.5} y2={10} stroke="#93c5fd" strokeWidth={0.6} />
+    </Svg>
+  )
 }
 
 function buildConsequenceSummary(result: AuditResult): string {
   const { scores, criticalIssues, findings } = result
   const critCount = criticalIssues.length
   const totalIssues = findings.filter(f => f.severity !== 'pass').length
-
   const lines: string[] = []
 
   if (critCount > 0) {
     lines.push(
-      `This assessment has uncovered ${critCount} critical vulnerability${critCount > 1 ? 'ies' : 'y'} and ${totalIssues} total optimization failures that are silently suppressing this site's reach, authority, and revenue potential — each one compounding in cost the longer it remains unresolved.`
+      `This assessment has uncovered ${critCount} critical vulnerabilit${critCount > 1 ? 'ies' : 'y'} and ${totalIssues} total optimization failures that are actively suppressing this site's reach, authority, and revenue — each one compounding in cost every day it remains unresolved.`
     )
   } else {
     lines.push(
-      `This assessment has identified ${totalIssues} optimization gaps that are quietly limiting this site's competitive position across search, AI discovery, and brand authority channels.`
+      `This assessment has identified ${totalIssues} optimization gaps quietly limiting this site's competitive position across search, AI discovery, and brand authority channels.`
     )
   }
 
   if (scores.seo < 70) {
     lines.push(
-      `An SEO score of ${scores.seo}/100 means search engines are not fully indexing or trusting this site. Competitors with stronger technical foundations are capturing this audience — and retaining them.`
+      `An SEO score of ${scores.seo}/100 means search engines are failing to fully index and rank this content — sending high-intent visitors directly to competitors with stronger technical foundations, day after day.`
     )
   }
 
   if (scores.aeo < 70) {
     lines.push(
-      `With an AEO score of ${scores.aeo}/100, this site is absent from AI-generated answers on ChatGPT, Perplexity, and Google AI Overviews — platforms now responsible for influencing a growing share of purchase decisions before a user ever visits a website.`
+      `With an AEO score of ${scores.aeo}/100, this site is absent from AI-generated answers on ChatGPT, Perplexity, and Google AI Overviews — platforms that now influence a growing share of purchase decisions before a user ever visits a website.`
     )
   }
 
   if (scores.geo < 70) {
     lines.push(
-      `A GEO score of ${scores.geo}/100 confirms that AI language models are not citing, referencing, or recommending this business. In a landscape where AI-generated responses increasingly shape buyer behavior, invisibility at this level translates directly to lost market share.`
+      `A GEO score of ${scores.geo}/100 confirms that AI language models are not citing or recommending this business when users ask relevant questions — a critical blind spot as AI-generated responses increasingly shape buying behavior.`
     )
   }
 
   lines.push(
-    `The organizations that close these gaps today will define the competitive landscape of tomorrow. Delay is not neutral — it is a decision to concede ground.`
+    `Every competitor that closes these gaps today captures market share that becomes significantly harder to reclaim tomorrow. Delay is not neutral — it is a strategic concession.`
   )
 
   return lines.join('\n\n')
@@ -387,11 +441,9 @@ function FindingBlock({ findings, emptyText }: { findings: AuditFinding[]; empty
 function CriticalBlock({ findings }: { findings: AuditFinding[] }) {
   if (findings.length === 0) return null
   return (
-    <View style={S.criticalWrapper} wrap={false}>
+    <View style={S.criticalWrapper}>
       <View style={S.criticalBanner}>
-        <Text style={S.criticalBannerText}>
-          CRITICAL VULNERABILITIES — IMMEDIATE ACTION REQUIRED
-        </Text>
+        <Text style={S.criticalBannerText}>CRITICAL VULNERABILITIES — IMMEDIATE ACTION REQUIRED</Text>
       </View>
       <View style={S.criticalInner}>
         {findings.map((f) => {
@@ -432,28 +484,44 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
     <Document title={`XMS AI Visibility Audit — ${domain}`} author="XMS · Xperience AI Marketing">
       <Page size="A4" style={S.page}>
 
-        {/* ── Dark header (fixed — appears on every page) ── */}
-        <View style={S.header} fixed>
+        {/* ── Mini brand strip for pages 2+ (fixed, absolute) ── */}
+        <View fixed style={S.miniHeader}>
+          <Text style={S.miniHeaderText} render={({ pageNumber }) =>
+            pageNumber > 1 ? 'XMS · AI VISIBILITY REPORT' : ''
+          } />
+          <Text style={S.miniHeaderText} render={({ pageNumber }) =>
+            pageNumber > 1 ? domain : ''
+          } />
+        </View>
+
+        {/* ── Full dark header — page 1 only (no fixed prop) ── */}
+        <View style={S.header}>
           <View style={S.headerTop}>
             <Image style={S.logo} src={logoSrc} />
             <Text style={S.headerBadge}>CONFIDENTIAL · AI VISIBILITY AUDIT</Text>
           </View>
           <Text style={S.headerTitle}>AI Search & Digital Visibility Report</Text>
           <Text style={S.headerSubtitle}>SEO · AEO · GEO Intelligence Assessment</Text>
-          <Text style={S.headerUrl}>{domain}</Text>
+          <View style={S.urlRow}>
+            <GlobeIcon />
+            <Text style={S.headerUrl}>{domain}</Text>
+          </View>
           <Text style={S.headerDate}>Prepared on {dateStr} · For internal use only</Text>
         </View>
 
-        {/* ── Score circles (page 1 only — no fixed prop) ── */}
+        {/* ── RESULTS label + Score circles — page 1 only ── */}
+        <View style={S.resultsLabel}>
+          <Text style={S.resultsLabelText}>AUDIT RESULTS</Text>
+        </View>
         <View style={S.scoresBand}>
-          {[
+          {([
             { label: 'OVERALL', score: result.scores.overall },
             { label: 'SEO',     score: result.scores.seo     },
             { label: 'AEO',     score: result.scores.aeo     },
             { label: 'GEO',     score: result.scores.geo     },
-          ].map(({ label, score }) => {
+          ] as const).map(({ label, score }) => {
             const color = scoreColor(score)
-            const bg = scoreBg(score)
+            const bg    = scoreBg(score)
             return (
               <View key={label} style={S.scoreItem}>
                 <View style={[S.scoreCircle, { borderColor: color, backgroundColor: bg }]}>
@@ -469,13 +537,13 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
         {/* ── Content ── */}
         <View style={S.content}>
 
-          {/* Executive Summary — consequence-focused */}
+          {/* Executive Summary */}
           <View style={[S.summaryCard, { marginTop: 4 }]}>
             <Text style={S.summaryLabel}>EXECUTIVE SUMMARY</Text>
             <Text style={S.summaryText}>{consequenceSummary}</Text>
           </View>
 
-          {/* Critical Issues — high alert */}
+          {/* Critical Issues */}
           {result.criticalIssues.length > 0 && (
             <View style={S.section}>
               <CriticalBlock findings={result.criticalIssues} />
@@ -490,34 +558,33 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
                 <Text style={S.sectionTitle}>Untapped Growth Opportunities</Text>
                 <Text style={S.sectionCount}>({result.opportunities.length})</Text>
               </View>
-              <FindingBlock findings={result.opportunities} emptyText="No additional opportunities at this time." />
+              <FindingBlock findings={result.opportunities} emptyText="No additional opportunities identified." />
             </View>
           )}
 
-          {/* Full Technical Findings by category */}
+          {/* Full Technical Findings */}
           <View style={S.section}>
             <View style={S.sectionHeader}>
               <View style={[S.sectionDot, { backgroundColor: C.indigo }]} />
               <Text style={S.sectionTitle}>Complete Technical Assessment</Text>
             </View>
-
             {seoFindings.length > 0 && (
               <>
-                <Text style={S.categoryLabel}>SEO — Search Engine Optimization ({seoFindings.length})</Text>
+                <Text style={S.categoryLabel}>SEO — Search Engine Optimization  ({seoFindings.length} issues)</Text>
                 <FindingBlock findings={seoFindings} emptyText="" />
               </>
             )}
             {aeoFindings.length > 0 && (
               <>
                 <View style={S.dividerSmall} />
-                <Text style={S.categoryLabel}>AEO — Answer Engine Optimization ({aeoFindings.length})</Text>
+                <Text style={S.categoryLabel}>AEO — Answer Engine Optimization  ({aeoFindings.length} issues)</Text>
                 <FindingBlock findings={aeoFindings} emptyText="" />
               </>
             )}
             {geoFindings.length > 0 && (
               <>
                 <View style={S.dividerSmall} />
-                <Text style={S.categoryLabel}>GEO — Generative Engine Optimization ({geoFindings.length})</Text>
+                <Text style={S.categoryLabel}>GEO — Generative Engine Optimization  ({geoFindings.length} issues)</Text>
                 <FindingBlock findings={geoFindings} emptyText="" />
               </>
             )}
@@ -525,12 +592,14 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
 
         </View>
 
-        {/* ── Footer (fixed) ── */}
+        {/* ── Footer (fixed — every page) ── */}
         <View style={S.footer} fixed>
           <Text style={S.footerBrand}>XMS · Xperience AI Marketing Solutions</Text>
           <View style={S.footerRight}>
             <Text style={S.footerText}>xperienceusa.com</Text>
-            <Text style={S.footerText} render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+            <Text style={S.footerText} render={({ pageNumber, totalPages }) =>
+              `Page ${pageNumber} of ${totalPages}`
+            } />
           </View>
         </View>
 
