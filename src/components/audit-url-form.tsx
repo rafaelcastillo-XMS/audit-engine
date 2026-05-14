@@ -128,11 +128,11 @@ export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrl
       {isRunning && (
         <div className="mt-4 space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600 flex items-center gap-1.5">
+            <span className="text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
               <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500" />
               {AUDIT_STEPS[Math.min(step, AUDIT_STEPS.length - 1)]}…
             </span>
-            <span className="text-gray-400 text-xs">{progress}%</span>
+            <span className="text-gray-400 dark:text-gray-500 text-xs">{progress}%</span>
           </div>
           <Progress value={progress} className="h-1.5" />
           <div className="flex gap-1.5">
@@ -141,7 +141,7 @@ export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrl
                 key={s}
                 title={s}
                 className={`h-1 rounded-full flex-1 transition-all duration-500 ${
-                  i < step ? 'bg-blue-500' : i === step ? 'bg-blue-300' : 'bg-gray-100'
+                  i < step ? 'bg-blue-500' : i === step ? 'bg-blue-300' : 'bg-gray-100 dark:bg-gray-700'
                 }`}
               />
             ))}

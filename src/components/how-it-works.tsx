@@ -23,16 +23,16 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-20 px-4 bg-gray-50 dark:bg-gray-900">
+    <section id="how-it-works" className="py-20 px-4 bg-gray-50 dark:bg-[#0c1120]">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-14">
-          <span className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3 block">
+          <span className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3 block">
             Process
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             How It Works
           </h2>
-          <p className="text-gray-500 max-w-xl mx-auto">
+          <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
             A fast three-step process that surfaces actionable insights for any website.
           </p>
         </div>
@@ -40,7 +40,7 @@ export function HowItWorks() {
         <div className="grid md:grid-cols-3 gap-4 relative">
           {steps.map((step, i) => (
             <div key={step.step} className="relative">
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full overflow-hidden">
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm h-full overflow-hidden">
                 <img
                   src={step.image}
                   alt={step.title}

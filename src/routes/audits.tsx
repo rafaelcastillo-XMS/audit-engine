@@ -39,7 +39,7 @@ function AuditsPage() {
               key={a.id}
               to="/audit/$auditId"
               params={{ auditId: a.id }}
-              className="block bg-white border border-gray-100 rounded-xl p-4 hover:border-blue-200 hover:shadow-sm transition-all group"
+              className="block bg-white border border-gray-100 rounded-3xl p-4 hover:border-blue-200 hover:shadow-sm transition-all group"
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">

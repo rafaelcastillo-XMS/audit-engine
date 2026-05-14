@@ -32,7 +32,7 @@ function InternalPage() {
         </div>
 
         {/* Form */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-lg shadow-gray-100/50">
+        <div className="bg-white border border-gray-200 rounded-3xl p-4 shadow-lg shadow-gray-100/50">
           <AuditUrlForm
             onNavigate={(id) =>
               navigate({

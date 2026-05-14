@@ -150,7 +150,7 @@ function HomePage() {
 
             <button
               onClick={scrollToForm}
-              className="group inline-flex items-center gap-2.5 bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white font-semibold px-8 py-4 rounded-xl text-base transition-all duration-200 shadow-xl shadow-blue-600/25 hover:shadow-blue-500/35 hover:-translate-y-0.5"
+              className="group inline-flex items-center gap-2.5 bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white font-semibold px-8 py-4 rounded-xl text-base transition-all duration-200 cursor-pointer shadow-xl shadow-blue-600/25 hover:shadow-blue-500/35 hover:-translate-y-0.5"
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
               Analyze My Site — Free
@@ -177,30 +177,32 @@ function HomePage() {
       </section>
 
       {/* ── Audit Form Section ── */}
-      <section id="audit-form" className="py-16 px-4 bg-white border-b border-gray-100">
+      <section id="audit-form" className="py-16 px-4 bg-white border-b border-gray-100 dark:bg-[#0c1120] dark:border-gray-800">
         <div className="max-w-2xl mx-auto">
 
           {/* Stats above input */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-8">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 mb-8">
             {STATS.map((s, i) => (
-              <div key={s.label} className="flex items-center gap-2">
-                {i > 0 && <div className="w-px h-4 bg-gray-200 hidden sm:block" />}
-                <span className="text-xl font-black text-gray-900">{s.value}</span>
-                <span className="text-sm text-gray-400">{s.label}</span>
+              <div key={s.label} className="flex items-center gap-8">
+                {i > 0 && <div className="w-px h-8 bg-gray-200 dark:bg-gray-700 hidden sm:block" />}
+                <div className="flex flex-col items-center gap-0.5">
+                  <span className="text-2xl font-black text-blue-600 dark:text-blue-400 leading-none">{s.value}</span>
+                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400 tracking-wide">{s.label}</span>
+                </div>
               </div>
             ))}
           </div>
 
           <div className="text-center mb-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
               Analyze Any Website — Free
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               Paste a URL and get your full report in under 10 seconds.
             </p>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl p-3 shadow-lg shadow-gray-100/50">
+          <div className="bg-white border border-gray-200 rounded-3xl p-3 shadow-lg shadow-gray-100/50 dark:bg-white/[0.04] dark:border-white/10 dark:shadow-none">
             <AuditUrlForm
               onNavigate={(id) => navigate({ to: '/audit/$auditId', params: { auditId: id } })} 
             />
@@ -217,19 +219,31 @@ function HomePage() {
       <FaqSection />
 
       {/* ── Bottom CTA ── */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-600 to-blue-800 text-white text-center">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to Audit Your First Site?
+      <section className="relative min-h-[72vh] flex items-center justify-center px-4 overflow-hidden bg-gray-950 text-white text-center">
+        {/* subtle radial glow */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="w-[700px] h-[700px] rounded-full bg-blue-600/20 blur-[120px]" />
+        </div>
+        {/* grid texture */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: 'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)', backgroundSize: '48px 48px' }}
+        />
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <p className="uppercase tracking-widest text-xs text-blue-400 font-semibold mb-5">
+            Free · Instant · No sign-up
+          </p>
+          <h2 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight">
+            Ready to Audit<br className="hidden md:block" /> Your First Site?
           </h2>
-          <p className="text-blue-100 mb-8">
+          <p className="text-gray-400 text-lg md:text-xl mb-10 max-w-xl mx-auto leading-relaxed">
             Paste a URL and get a full SEO, AEO and GEO report in seconds.
           </p>
           <button
             onClick={scrollToForm}
-            className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold px-7 py-3.5 rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-4 rounded-xl transition-colors cursor-pointer shadow-xl shadow-blue-900/40 text-base"
           >
-            <Sparkles className="w-4 h-4 text-amber-500" />
+            <Sparkles className="w-4 h-4 text-amber-400" />
             Generate Audit Report
           </button>
         </div>

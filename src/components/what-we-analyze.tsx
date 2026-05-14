@@ -1,38 +1,48 @@
 const cards = [
   {
-    span: 'col-span-2 lg:col-span-4',
+    cols: 'col-span-12 lg:col-span-7',
     label: 'SEO',
     labelColor: 'text-blue-500',
+    imgBg: 'bg-blue-50',
     title: 'Technical SEO',
     description: 'Core signals that determine how search engines crawl, index, and rank your pages.',
+    image: '/card-seo.svg',
   },
   {
-    span: 'col-span-2 ',
+    cols: 'col-span-12 lg:col-span-5',
     label: 'AEO',
     labelColor: 'text-purple-500',
+    imgBg: 'bg-purple-50',
     title: 'Answer Engine',
     description: 'Optimized for featured snippets, voice results, and AI-generated summaries.',
+    image: '/card-aeo.svg',
   },
   {
-    span: 'col-span-2',
+    cols: 'col-span-12 md:col-span-6 lg:col-span-4',
     label: 'GEO',
     labelColor: 'text-amber-500',
+    imgBg: 'bg-amber-50',
     title: 'AI Visibility',
     description: 'How well ChatGPT, Claude, and Gemini can find and recommend your business.',
+    image: '/card-geo.svg',
   },
   {
-    span: 'col-span-2',
+    cols: 'col-span-12 md:col-span-6 lg:col-span-4',
     label: 'Schema',
     labelColor: 'text-emerald-500',
+    imgBg: 'bg-emerald-50',
     title: 'Structured Data',
     description: 'Markup that AI models read directly.',
+    image: '/card-schema.svg',
   },
   {
-    span: 'col-span-2',
+    cols: 'col-span-12 md:col-span-12 lg:col-span-4',
     label: 'Report',
     labelColor: 'text-cyan-600',
+    imgBg: 'bg-cyan-50',
     title: 'Full Audit Report',
     description: 'SEO, AEO & GEO in one unified score with prioritized fixes, in seconds.',
+    image: '/card-report.svg',
   },
 ]
 
@@ -56,18 +66,18 @@ export function WhatWeAnalyze() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-12 gap-4">
           {cards.map((card) => (
             <div
               key={card.label}
-              className={`${card.span} bg-white dark:bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col`}
+              className={`${card.cols} bg-white dark:bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col`}
             >
-              {/* Placeholder */}
-              <div className="bg-gray-100 h-44" />
+              <div className={`${card.imgBg} w-full`}>
+                <img src={card.image} alt={card.title} className="w-full" />
+              </div>
 
-              {/* Text */}
-              <div className="px-5 py-5">
-                <span className={`text-xs font-semibold uppercase tracking-widest block mb-1 ${card.labelColor}`}>
+              <div className="px-6 py-5">
+                <span className={`text-xs font-semibold uppercase tracking-widest block mb-1.5 ${card.labelColor}`}>
                   {card.label}
                 </span>
                 <h3 className="text-lg font-semibold text-gray-900 mb-1">{card.title}</h3>
