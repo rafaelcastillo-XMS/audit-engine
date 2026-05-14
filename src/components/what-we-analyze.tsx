@@ -48,20 +48,21 @@ const cards = [
 
 export function WhatWeAnalyze() {
   return (
-    <section id="analyze" className="py-24 px-4 bg-slate-50 dark:bg-[#060d20]">
-      <div className="max-w-6xl mx-auto">
+    <section id="analyze" className="relative py-24 px-4 overflow-hidden bg-slate-50 dark:bg-[#060d20]">
+      {/* light-mode glows only */}
+      <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full bg-blue-200/25 blur-[120px] dark:hidden" />
+      <div className="pointer-events-none absolute -top-10 right-0 w-[400px] h-[300px] rounded-full bg-purple-200/20 blur-[100px] dark:hidden" />
+      <div className="max-w-6xl mx-auto relative z-10">
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3 block">
-              Coverage
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-              What We Analyze
-            </h2>
-          </div>
-          <p className="text-base text-gray-500 dark:text-gray-400 leading-relaxed max-w-sm sm:text-right">
+        <div className="text-center mb-10">
+          <span className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3 block">
+            Coverage
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+            What We Analyze
+          </h2>
+          <p className="mt-4 text-base text-gray-500 dark:text-gray-400 leading-relaxed max-w-sm mx-auto">
             Five dimensions of visibility — from traditional search to AI-generated answers.
           </p>
         </div>

@@ -4,7 +4,6 @@ import { Sparkles, ChevronDown, Check } from 'lucide-react'
 import { AuditUrlForm } from '@/components/audit-url-form'
 import { HowItWorks } from '@/components/how-it-works'
 import { WhatWeAnalyze } from '@/components/what-we-analyze'
-import { KeyFeatures } from '@/components/feature-card'
 import { FaqSection } from '@/components/faq-section'
 
 export const Route = createFileRoute('/')({
@@ -12,8 +11,11 @@ export const Route = createFileRoute('/')({
 })
 
 const HERO_IMAGES = [
-  { src: '/Hero_Singleman.png', alt: 'Person using XMS Audit Lab on smartphone' },
-  { src: '/Hero_womanTel.png', alt: 'Woman using XMS Audit Lab on phone' },
+  { src: '/Hero_slide-3.png', alt: 'Laborman usin XMS Audit on phone' },
+  { src: '/Hero_slide-4.png', alt: 'Person using XMS Audit Lab on smartphone' },
+  { src: '/Hero_slide-2.png', alt: 'Woman using XMS Audit Lab on phone' },
+  { src: '/Hero_slide-1.png', alt: 'Laborman usin XMS Audit on phone' },
+
 ]
 
 function HeroCarousel() {
@@ -22,20 +24,19 @@ function HeroCarousel() {
   useEffect(() => {
     const id = setInterval(() => {
       setCurrent(i => (i + 1) % HERO_IMAGES.length)
-    }, 4000)
+    }, 5000)
     return () => clearInterval(id)
   }, [])
 
   return (
-    <div className="hidden lg:block relative">
+    <div className="hidden lg:block relative overflow-hidden">
       {HERO_IMAGES.map((img, i) => (
         <img
           key={img.src}
           src={img.src}
           alt={img.alt}
-          className={`absolute bottom-0 right-0 w-auto h-[90%] max-w-none transition-opacity duration-700 ${
-            i === current ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute bottom-0 right-0 w-auto max-h-full max-w-full object-contain transition-opacity duration-700 ${i === current ? 'opacity-100' : 'opacity-0'
+            }`}
         />
       ))}
     </div>
@@ -204,7 +205,7 @@ function HomePage() {
 
           <div className="bg-white border border-gray-200 rounded-3xl p-3 shadow-lg shadow-gray-100/50 dark:bg-white/[0.04] dark:border-white/10 dark:shadow-none">
             <AuditUrlForm
-              onNavigate={(id) => navigate({ to: '/audit/$auditId', params: { auditId: id } })} 
+              onNavigate={(id) => navigate({ to: '/audit/$auditId', params: { auditId: id } })}
             />
           </div>
           <p className="mt-3 text-center text-xs text-gray-400">
@@ -215,7 +216,6 @@ function HomePage() {
 
       <HowItWorks />
       <WhatWeAnalyze />
-      <KeyFeatures />
       <FaqSection />
 
       {/* ── Bottom CTA ── */}

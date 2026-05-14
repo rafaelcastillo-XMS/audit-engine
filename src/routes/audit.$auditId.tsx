@@ -39,17 +39,11 @@ function AuditPage() {
   }
 
   return (
-    <div className="py-6">
-      <div className="max-w-5xl mx-auto px-4 mb-4">
-        <button
-          onClick={() => navigate({ to: mode === 'internal' ? '/internal' : '/' })}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {mode === 'internal' ? 'Back to Internal Tool' : 'Back to home'}
-        </button>
-      </div>
-      <AuditReport result={result} mode={mode ?? 'public'} />
-    </div>
+    <AuditReport
+      result={result}
+      mode={mode ?? 'public'}
+      onBack={() => navigate({ to: mode === 'internal' ? '/internal' : '/' })}
+      backLabel={mode === 'internal' ? 'Back to Internal Tool' : 'Exit Report'}
+    />
   )
 }
