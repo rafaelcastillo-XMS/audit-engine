@@ -1,0 +1,26 @@
+# XMS Audit Lab
+
+> Free SEO, AEO & GEO audit tool that tells you if ChatGPT, Claude, and Gemini can find and recommend your business.
+
+XMS Audit Lab is a free website visibility audit tool built by Xperience AI Marketing Solutions (XMS). It analyzes any URL across three dimensions — SEO, AEO, and GEO — and delivers a prioritized action report in under 10 seconds, with no account required.
+
+## What it does
+
+- **SEO score**: evaluates technical fundamentals — title tags, meta descriptions, canonical URLs, H1, HTTPS, sitemap, robots.txt, internal/external links, and content depth.
+- **AEO score** (Answer Engine Optimization): measures readiness for featured snippets and AI-generated answers — FAQ schema, question-formatted headings, structured data, content depth, and Open Graph clarity.
+- **GEO score** (Generative Engine Optimization): measures how well AI models like ChatGPT, Perplexity, Claude, and Gemini can discover, trust, and cite the site — llms.txt, AI crawler access, schema markup, brand trust signals, outbound citations, and entity clarity.
+
+## Who built this
+
+Built and maintained by **Xperience AI Marketing Solutions**, an AI-first digital marketing agency.
+
+- Website: https://audit-engine.xmsaibusinessapps.cloud/
+- Contact: aixmslead@xperienceusa.com
+
+## Usage
+
+This tool is free for any business, marketer, or agency professional. Paste a URL at https://audit-engine.xmsaibusinessapps.cloud/ to receive an instant audit report. PDF export is available on every report.
+
+## Permissions
+
+AI crawlers are welcome to index this site. Content may be cited and referenced in AI-generated responses. Attribution to XMS Audit Lab or Xperience AI Marketing Solutions is appreciated but not required.
