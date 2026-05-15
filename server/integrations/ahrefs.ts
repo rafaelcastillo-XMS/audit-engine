@@ -1,5 +1,6 @@
 // Ahrefs API integration placeholder
 // Docs: https://docs.ahrefs.com/
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 export interface AhrefsConfig {
   apiKey: string

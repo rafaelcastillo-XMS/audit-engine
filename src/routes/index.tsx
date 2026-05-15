@@ -43,73 +43,7 @@ function HeroCarousel() {
   )
 }
 
-function MockReportCard() {
-  return (
-    <div className="relative w-full">
-      <div className="absolute -inset-6 bg-gradient-to-br from-blue-600/20 to-cyan-600/10 rounded-3xl blur-2xl pointer-events-none" />
-      <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/80 to-transparent" />
-        <div className="p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="text-xs font-bold text-white/80 tracking-wide">Audit Report</div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                <span className="text-xs text-gray-500">yourdomain.com</span>
-              </div>
-            </div>
-            <div className="text-[10px] text-gray-600 bg-white/5 border border-white/10 px-2.5 py-1 rounded-full">
-              Just analyzed
-            </div>
-          </div>
 
-          <div className="grid grid-cols-4 gap-2 py-1">
-            {[
-              { label: 'Overall', score: 87, ring: 'ring-emerald-500/40', text: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-              { label: 'SEO', score: 91, ring: 'ring-blue-500/40', text: 'text-blue-400', bg: 'bg-blue-500/10' },
-              { label: 'AEO', score: 74, ring: 'ring-purple-500/40', text: 'text-purple-400', bg: 'bg-purple-500/10' },
-              { label: 'GEO', score: 68, ring: 'ring-amber-500/40', text: 'text-amber-400', bg: 'bg-amber-500/10' },
-            ].map(item => (
-              <div key={item.label} className="flex flex-col items-center gap-1.5">
-                <div className={`w-14 h-14 rounded-full ${item.bg} ring-2 ${item.ring} flex items-center justify-center`}>
-                  <span className={`font-black text-sm ${item.text}`}>{item.score}</span>
-                </div>
-                <span className="text-[10px] text-gray-500">{item.label}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="h-px bg-white/[0.06]" />
-
-          <div className="space-y-2">
-            {[
-              { dot: 'bg-red-400', text: 'Missing canonical tag', badge: 'Critical', color: 'text-red-400' },
-              { dot: 'bg-yellow-400', text: 'Title tag too short (38 ch.)', badge: 'Warning', color: 'text-yellow-400' },
-              { dot: 'bg-blue-400', text: 'Add FAQ schema markup', badge: 'Info', color: 'text-blue-400' },
-              { dot: 'bg-green-400', text: 'HTTPS enabled', badge: 'Pass', color: 'text-green-400' },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-2.5">
-                <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${item.dot}`} />
-                <span className="text-xs text-gray-300 flex-1 truncate">{item.text}</span>
-                <span className={`text-[10px] font-semibold flex-shrink-0 ${item.color}`}>{item.badge}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex gap-2 pt-1">
-            <div className="flex-1 h-8 rounded-lg bg-blue-600/20 border border-blue-500/20 flex items-center justify-center">
-              <span className="text-xs text-blue-400 font-medium">Fix My Site</span>
-            </div>
-            <div className="w-24 h-8 rounded-lg bg-white/[0.04] border border-white/10 flex items-center justify-center">
-              <span className="text-xs text-gray-500">Export PDF</span>
-            </div>
-          </div>
-        </div>
-        <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-blue-600/10 to-transparent pointer-events-none" />
-      </div>
-    </div>
-  )
-}
 
 const STATS = [
   { label: 'SEO Signals', value: '20+' },

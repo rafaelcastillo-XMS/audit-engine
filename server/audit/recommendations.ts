@@ -86,7 +86,7 @@ export function generateFindings(data: RawData): AuditFinding[] {
       category: 'seo',
       severity: 'warning',
       title: 'Multiple H1 Tags',
-      description: `${data.h1s.length} H1 headings were found on this page — best practice is exactly one. Multiple H1 tags dilute the topical signal you send to search engines, making it harder for them to determine the page\'s primary subject. This can weaken rankings for your target keyword and create confusion for screen readers navigating the page, which may also impact accessibility compliance scores.`,
+      description: `${data.h1s.length} H1 headings were found on this page — best practice is exactly one. Multiple H1 tags dilute the topical signal you send to search engines, making it harder for them to determine the page's primary subject. This can weaken rankings for your target keyword and create confusion for screen readers navigating the page, which may also impact accessibility compliance scores.`,
       recommendation: 'Keep only the most important H1 that reflects the page\'s core topic. Convert remaining H1s to H2 or H3 tags.',
       impact: 'medium',
     })
@@ -305,7 +305,7 @@ export function generateFindings(data: RawData): AuditFinding[] {
       category: 'geo',
       severity: 'info',
       title: 'Insufficient External Citations',
-      description: `Only ${data.externalLinks} outbound link${data.externalLinks === 1 ? ' was' : 's were'} found on this page. Citing authoritative external sources is a key credibility signal for AI systems and a component of Google\'s E-E-A-T evaluation framework. Content that supports claims with links to reputable sources (industry research, government data, academic studies) is consistently judged as more trustworthy and citation-worthy by AI models. Isolated content with no external references reads as unsubstantiated opinion rather than informed expertise.`,
+      description: `Only ${data.externalLinks} outbound link${data.externalLinks === 1 ? ' was' : 's were'} found on this page. Citing authoritative external sources is a key credibility signal for AI systems and a component of Google's E-E-A-T evaluation framework. Content that supports claims with links to reputable sources (industry research, government data, academic studies) is consistently judged as more trustworthy and citation-worthy by AI models. Isolated content with no external references reads as unsubstantiated opinion rather than informed expertise.`,
       recommendation: 'Incorporate 2–5 links to authoritative external sources that support key claims on the page. Prioritize .edu, .gov, and industry-leading publications.',
       impact: 'low',
     })

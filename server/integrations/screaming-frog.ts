@@ -1,5 +1,6 @@
 // Screaming Frog integration placeholder
 // Connect to the Screaming Frog SEO Spider API when available
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 export interface ScreamingFrogConfig {
   apiKey: string

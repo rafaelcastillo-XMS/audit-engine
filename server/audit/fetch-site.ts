@@ -24,7 +24,7 @@ export async function fetchSite(url: string): Promise<FetchResult> {
 
     const req = protocol.get(url, options, (res) => {
       const statusCode = res.statusCode ?? 0
-      let finalUrl = url
+      const finalUrl = url
 
       if (statusCode >= 300 && statusCode < 400 && res.headers.location) {
         const location = res.headers.location

@@ -28,7 +28,7 @@ function RootLayout() {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    if (!isDarkHero) { setScrolled(false); return }
+    if (!isDarkHero) return
     const onScroll = () => setScrolled(window.scrollY > 60)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })

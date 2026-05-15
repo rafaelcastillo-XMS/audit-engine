@@ -51,7 +51,9 @@ export async function analyzeHtml(html: string, pageUrl: string): Promise<RawDat
       const abs = href.startsWith('http') ? href : new URL(href, pageUrl).href
       if (abs.startsWith(origin)) internalLinks++
       else externalLinks++
-    } catch {}
+    } catch {
+      // Ignore invalid URLs
+    }
   })
 
   // Word count from body text
