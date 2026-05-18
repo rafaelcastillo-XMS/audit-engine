@@ -95,6 +95,32 @@ function CoreWebVitals({ ps }: { ps: PageSpeedResult }) {
   )
 }
 
+// ── Overview ─────────────────────────────────────────────
+function OverviewSection({ summary }: { summary: string }) {
+  const paragraphs = summary.split('\n\n').filter(Boolean)
+  const [first, ...rest] = paragraphs
+  return (
+    <div className="px-4 md:px-6 pt-5 pb-5 border-b border-gray-100 dark:border-white/[0.06]">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-1 h-4 rounded-full bg-indigo-500 flex-shrink-0" />
+        <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-indigo-500 dark:text-indigo-400">
+          Overview
+        </span>
+      </div>
+      {first && (
+        <p className="text-gray-900 dark:text-gray-100 text-[15px] font-semibold leading-relaxed mb-3">
+          {first}
+        </p>
+      )}
+      {rest.map((p, i) => (
+        <p key={i} className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-2.5 last:mb-0">
+          {p}
+        </p>
+      ))}
+    </div>
+  )
+}
+
 // ── Domain Authority (Ahrefs) ────────────────────────────
 function DomainAuthority({ data }: { data: AhrefsData }) {
   const drColor =
@@ -346,8 +372,8 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
           <ScoresSection scores={scores} />
         </div>
 
-        <div className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.07] rounded-2xl px-4 md:px-6 py-4">
-          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{result.executiveSummary}</p>
+        <div className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.07] rounded-2xl overflow-hidden">
+          <OverviewSection summary={result.executiveSummary} />
         </div>
 
         <CriticalPitch count={result.criticalIssues.length} domain={domain} />
@@ -475,10 +501,7 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
           <ScoresSection scores={scores} />
 
           {/* Executive summary */}
-          <div className="px-4 md:px-6 py-4 bg-gray-50/60 dark:bg-white/[0.03] border-b border-gray-100 dark:border-white/[0.06]">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 dark:text-indigo-400 mb-2">Overview</p>
-            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{result.executiveSummary}</p>
-          </div>
+          <OverviewSection summary={result.executiveSummary} />
 
           {/* Commercial pitch (public only) */}
           {mode === 'public' && (

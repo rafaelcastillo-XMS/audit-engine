@@ -491,5 +491,5 @@ export function buildExecutiveSummary(data: RawData, scores: { seo: number; aeo:
   // Closing urgency + CTA
   lines.push(`The businesses investing in AI visibility today will dominate their niche for the next five years. Those who delay will spend that time trying to recover ground from competitors who moved first. XMS can implement every fix in this report — from technical corrections to full AI visibility architecture — and turn this audit into a competitive advantage before your window closes.`)
 
-  return lines.join(' ')
+  return lines.join('\n\n')
 }
