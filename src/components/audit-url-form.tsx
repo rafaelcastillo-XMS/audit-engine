@@ -98,7 +98,7 @@ export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrl
             type="submit"
             disabled={isRunning}
             size={compact ? 'default' : 'lg'}
-            className={`gap-2 ${compact ? 'px-4' : 'px-7 h-14 text-base font-semibold'} whitespace-nowrap`}
+            className={`gap-2 bg-[#22C55E] hover:bg-[#16a34a] text-white border-0 shadow-lg shadow-green-600/20 hover:shadow-green-500/30 transition-all duration-200 ${compact ? 'px-4' : 'px-7 h-14 text-base font-semibold'} whitespace-nowrap`}
           >
             {isRunning ? (
               <>

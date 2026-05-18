@@ -27,10 +27,13 @@ function getScoreColor(score: number) {
 const scoreBorder = (s: number) =>
   s >= 80 ? 'border-green-400' : s >= 60 ? 'border-yellow-400' : s >= 40 ? 'border-orange-400' : 'border-red-400'
 
+const scoreGlow = (s: number) =>
+  s >= 80 ? 'score-glow-green' : s >= 60 ? 'score-glow-yellow' : s >= 40 ? 'score-glow-orange' : 'score-glow-red'
+
 function ScoreBlock({ label, score, large }: { label: string; score: number; large?: boolean }) {
   return (
     <div className="flex flex-col items-center gap-2 text-center">
-      <div className={`rounded-full border-4 ${scoreBorder(score)} flex items-center justify-center ${large ? 'w-24 h-24' : 'w-16 h-16'}`}>
+      <div className={`rounded-full border-4 ${scoreBorder(score)} ${scoreGlow(score)} flex items-center justify-center transition-shadow duration-300 ${large ? 'w-24 h-24' : 'w-16 h-16'}`}>
         <span className={`font-black tabular-nums leading-none ${large ? 'text-4xl' : 'text-2xl'} ${getScoreColor(score)}`}>
           {Math.round(score)}
         </span>
@@ -72,9 +75,8 @@ function CoreWebVitals({ ps }: { ps: PageSpeedResult }) {
           <TrendingUp className="w-4 h-4 text-blue-500" />
           <span className="font-semibold text-gray-800 dark:text-white text-sm">Core Web Vitals</span>
         </div>
-        <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${
-          ps.performanceScore >= 90 ? cwvColors.good : ps.performanceScore >= 50 ? cwvColors['needs-improvement'] : cwvColors.poor
-        }`}>{ps.performanceScore}/100</span>
+        <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${ps.performanceScore >= 90 ? cwvColors.good : ps.performanceScore >= 50 ? cwvColors['needs-improvement'] : cwvColors.poor
+          }`}>{ps.performanceScore}/100</span>
       </div>
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
         {metrics.map(({ key, label, value }) => {
@@ -97,16 +99,16 @@ function CoreWebVitals({ ps }: { ps: PageSpeedResult }) {
 function DomainAuthority({ data }: { data: AhrefsData }) {
   const drColor =
     data.domainRating >= 60 ? 'text-green-600 dark:text-green-400'
-    : data.domainRating >= 30 ? 'text-amber-600 dark:text-amber-400'
-    : 'text-red-600 dark:text-red-400'
+      : data.domainRating >= 30 ? 'text-amber-600 dark:text-amber-400'
+        : 'text-red-600 dark:text-red-400'
 
   const metrics = [
-    { label: 'Domain Rating',    value: `${data.domainRating}/100`,              highlight: true },
-    { label: 'Ahrefs Rank',      value: `#${data.ahrefsRank.toLocaleString()}`,  highlight: false },
-    { label: 'Backlinks',        value: data.backlinks.toLocaleString(),          highlight: false },
-    { label: 'Ref. Domains',     value: data.referringDomains.toLocaleString(),  highlight: false },
-    { label: 'Organic Traffic',  value: data.organicTraffic.toLocaleString(),    highlight: false },
-    { label: 'Organic Keywords', value: data.organicKeywords.toLocaleString(),   highlight: false },
+    { label: 'Domain Rating', value: `${data.domainRating}/100`, highlight: true },
+    { label: 'Ahrefs Rank', value: `#${data.ahrefsRank.toLocaleString()}`, highlight: false },
+    { label: 'Backlinks', value: data.backlinks.toLocaleString(), highlight: false },
+    { label: 'Ref. Domains', value: data.referringDomains.toLocaleString(), highlight: false },
+    { label: 'Organic Traffic', value: data.organicTraffic.toLocaleString(), highlight: false },
+    { label: 'Organic Keywords', value: data.organicKeywords.toLocaleString(), highlight: false },
   ]
 
   return (
@@ -431,7 +433,7 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
               onClick={() => setShowLeadModal(true)}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-blue-50 text-blue-900 dark:bg-blue-600 dark:hover:bg-blue-500 dark:text-white font-bold px-5 py-3 rounded-xl cursor-pointer transition-all border-2 border-white/50 dark:border-blue-500/50 shadow-lg shadow-black/20 dark:shadow-blue-900/40 text-sm"
             >
-              <Wrench className="w-4 h-4" />
+              <Wrench className="w-6 h-6" />
               Fix My Site
               <ArrowUpRight className="w-4 h-4" />
             </button>

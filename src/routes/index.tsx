@@ -85,9 +85,10 @@ function HomePage() {
 
             <button
               onClick={scrollToForm}
-              className="group inline-flex items-center gap-2.5 bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white font-semibold px-8 py-4 rounded-xl text-base transition-all duration-200 cursor-pointer shadow-xl shadow-blue-600/25 hover:shadow-blue-500/35 hover:-translate-y-0.5"
+              className="group inline-flex items-center gap-2.5 bg-[#22C55E] hover:bg-[#16a34a] active:scale-[0.98] text-white font-bold px-8 py-4 rounded-xl text-base transition-all duration-200 cursor-pointer shadow-xl shadow-green-600/30 hover:shadow-green-500/40 hover:-translate-y-0.5"
+              style={{ boxShadow: '0 8px 32px rgba(34,197,94,0.28)' }}
             >
-              <Sparkles className="w-4 h-4 text-amber-300" />
+              <Sparkles className="w-4 h-4 text-white/80" />
               Analyze My Site — Free
               <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:translate-y-1" />
             </button>
