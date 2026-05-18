@@ -304,9 +304,9 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
   const domain = new URL(result.url).hostname
 
   const severityOrder = { critical: 0, warning: 1, info: 2, pass: 3 }
-  const allFindings = [...result.findings].sort((a, b) =>
-    (severityOrder[a.severity] ?? 9) - (severityOrder[b.severity] ?? 9)
-  )
+  const allFindings = [...result.findings]
+    .filter(f => f.severity !== 'pass')
+    .sort((a, b) => (severityOrder[a.severity] ?? 9) - (severityOrder[b.severity] ?? 9))
   const seoFindings = allFindings.filter(f => f.category === 'seo')
   const aeoFindings = allFindings.filter(f => f.category === 'aeo')
   const geoFindings = allFindings.filter(f => f.category === 'geo')
