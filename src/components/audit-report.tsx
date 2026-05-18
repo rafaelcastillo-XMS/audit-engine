@@ -113,7 +113,7 @@ function OverviewSection({ summary }: { summary: string }) {
         </p>
       )}
       {rest.map((p, i) => (
-        <p key={i} className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-2.5 last:mb-0">
+        <p key={i} className="text-gray-600 text-sm leading-relaxed mb-2.5 last:mb-0">
           {p}
         </p>
       ))}
