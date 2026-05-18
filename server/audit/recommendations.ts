@@ -459,37 +459,45 @@ export function generatePageSpeedFindings(ps: PageSpeedResult): AuditFinding[] {
 
 export function buildExecutiveSummary(data: RawData, scores: { seo: number; aeo: number; geo: number; overall: number }): string {
   const domain = new URL(data.url).hostname
-
   const lines: string[] = []
 
-  // Opening — calibrated to overall score
+  // Hook — one punch
   if (scores.overall >= 75) {
-    lines.push(`${domain} has a solid foundation, but this audit reveals specific gaps that are quietly costing you revenue — particularly in the AI search channels that now drive the first touchpoint for millions of buyers.`)
+    lines.push(`${domain} has a solid foundation.`)
+    lines.push(`But this audit found specific gaps that are quietly costing you revenue — especially in the AI search channels that now intercept buyers before they ever visit a website.`)
   } else if (scores.overall >= 50) {
-    lines.push(`${domain} is leaving significant revenue on the table. This audit identifies the exact technical and content gaps preventing this site from appearing in the AI-generated answers your future customers are already reading — right now, before they visit any website.`)
+    lines.push(`${domain} is invisible where it matters most right now.`)
+    lines.push(`This audit found the exact technical and content gaps that are preventing this site from appearing in the AI-generated answers your future customers are already reading — before they click on anything.`)
   } else {
-    lines.push(`${domain} has critical visibility failures that are actively redirecting potential customers to competitors. Every day these issues remain unfixed, buyers researching your market are being answered by AI systems that have learned to ignore this site.`)
+    lines.push(`${domain} has critical visibility failures.`)
+    lines.push(`Every day these issues go unfixed, buyers researching your market are being answered by AI systems that have learned to ignore this site — and sent directly to competitors.`)
   }
 
-  // AI urgency paragraph
-  const aiChannels = []
+  // The shift — AI reality
+  lines.push(`The AI search revolution is not coming. It is already here.`)
+
+  const aiChannels: string[] = []
   if (scores.aeo < 70) aiChannels.push('ChatGPT')
   if (scores.geo < 70) aiChannels.push('Perplexity', 'Google AI Overviews', 'Claude')
-  if (aiChannels.length > 0) {
-    lines.push(`The AI search revolution is not coming — it is already here. When someone in your market asks ${aiChannels.slice(0, 2).join(' or ')} "who should I hire for this?" or "what's the best option near me?" — your competitors who have invested in AI visibility are being recommended by name. This site currently is not.`)
+  const channelStr = aiChannels.length > 0 ? aiChannels.slice(0, 2).join(' and ') : 'ChatGPT and Perplexity'
+  lines.push(`When someone in your market asks ${channelStr} "who should I hire for this?" — your competitors who have invested in AI visibility are being recommended by name.`)
+  lines.push(`This site currently is not.`)
+
+  // Score diagnosis — each gap its own line
+  if (scores.seo < 60) {
+    lines.push(`An SEO score of ${scores.seo}/100 means search engines are struggling to fully index and rank this content.`)
+  }
+  if (scores.aeo < 60) {
+    lines.push(`An AEO score of ${scores.aeo}/100 means AI answer engines are not selecting this site as a trusted source for relevant questions.`)
+  }
+  if (scores.geo < 60) {
+    lines.push(`A GEO score of ${scores.geo}/100 means AI language models are not citing or recommending this business when buyers ask.`)
   }
 
-  // Specific score gaps
-  const gaps: string[] = []
-  if (scores.seo < 60) gaps.push(`an SEO score of ${scores.seo}/100 means search engines are struggling to fully index and rank your content`)
-  if (scores.aeo < 60) gaps.push(`an AEO score of ${scores.aeo}/100 means AI answer engines are not selecting this site as a source for relevant questions`)
-  if (scores.geo < 60) gaps.push(`a GEO score of ${scores.geo}/100 means AI language models are not citing or recommending this business`)
-  if (gaps.length > 0) {
-    lines.push(`Specifically: ${gaps.join('; ')}.`)
-  }
-
-  // Closing urgency + CTA
-  lines.push(`The businesses investing in AI visibility today will dominate their niche for the next five years. Those who delay will spend that time trying to recover ground from competitors who moved first. XMS can implement every fix in this report — from technical corrections to full AI visibility architecture — and turn this audit into a competitive advantage before your window closes.`)
+  // Urgency + CTA
+  lines.push(`The businesses investing in AI visibility today will own their niche for the next five years.`)
+  lines.push(`Those who wait will spend that time trying to recover ground from competitors who moved first.`)
+  lines.push(`XMS can implement every fix in this report — from technical corrections to full AI visibility architecture — and turn this audit into a competitive advantage before your window closes.`)
 
   return lines.join('\n\n')
 }
