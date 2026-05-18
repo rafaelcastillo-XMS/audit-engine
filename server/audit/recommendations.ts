@@ -459,9 +459,37 @@ export function generatePageSpeedFindings(ps: PageSpeedResult): AuditFinding[] {
 
 export function buildExecutiveSummary(data: RawData, scores: { seo: number; aeo: number; geo: number; overall: number }): string {
   const domain = new URL(data.url).hostname
-  const level = scores.overall >= 70 ? 'decent' : scores.overall >= 50 ? 'moderate' : 'significant'
-  const seoNote = scores.seo < 60 ? 'Technical SEO fundamentals need attention. ' : ''
-  const aeoNote = scores.aeo < 60 ? 'AEO optimization is lacking — structured data and Q&A content should be prioritized. ' : ''
-  const geoNote = scores.geo < 60 ? 'GEO readiness is low — the site may not be visible in AI-generated answers. ' : ''
-  return `${domain} shows ${level} search and AI visibility. ${seoNote}${aeoNote}${geoNote}With targeted improvements, this site can significantly increase its presence in both traditional search and AI-generated responses.`.trim()
+
+  const lines: string[] = []
+
+  // Opening — calibrated to overall score
+  if (scores.overall >= 75) {
+    lines.push(`${domain} has a solid foundation, but this audit reveals specific gaps that are quietly costing you revenue — particularly in the AI search channels that now drive the first touchpoint for millions of buyers.`)
+  } else if (scores.overall >= 50) {
+    lines.push(`${domain} is leaving significant revenue on the table. This audit identifies the exact technical and content gaps preventing this site from appearing in the AI-generated answers your future customers are already reading — right now, before they visit any website.`)
+  } else {
+    lines.push(`${domain} has critical visibility failures that are actively redirecting potential customers to competitors. Every day these issues remain unfixed, buyers researching your market are being answered by AI systems that have learned to ignore this site.`)
+  }
+
+  // AI urgency paragraph
+  const aiChannels = []
+  if (scores.aeo < 70) aiChannels.push('ChatGPT')
+  if (scores.geo < 70) aiChannels.push('Perplexity', 'Google AI Overviews', 'Claude')
+  if (aiChannels.length > 0) {
+    lines.push(`The AI search revolution is not coming — it is already here. When someone in your market asks ${aiChannels.slice(0, 2).join(' or ')} "who should I hire for this?" or "what's the best option near me?" — your competitors who have invested in AI visibility are being recommended by name. This site currently is not.`)
+  }
+
+  // Specific score gaps
+  const gaps: string[] = []
+  if (scores.seo < 60) gaps.push(`an SEO score of ${scores.seo}/100 means search engines are struggling to fully index and rank your content`)
+  if (scores.aeo < 60) gaps.push(`an AEO score of ${scores.aeo}/100 means AI answer engines are not selecting this site as a source for relevant questions`)
+  if (scores.geo < 60) gaps.push(`a GEO score of ${scores.geo}/100 means AI language models are not citing or recommending this business`)
+  if (gaps.length > 0) {
+    lines.push(`Specifically: ${gaps.join('; ')}.`)
+  }
+
+  // Closing urgency + CTA
+  lines.push(`The businesses investing in AI visibility today will dominate their niche for the next five years. Those who delay will spend that time trying to recover ground from competitors who moved first. XMS can implement every fix in this report — from technical corrections to full AI visibility architecture — and turn this audit into a competitive advantage before your window closes.`)
+
+  return lines.join(' ')
 }

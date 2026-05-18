@@ -110,7 +110,7 @@ function DomainAuthority({ data }: { data: AhrefsData }) {
   ]
 
   return (
-    <div className="border-t border-gray-100 dark:border-white/[0.06] px-4 md:px-6 py-5">
+    <div className="px-4 md:px-6 py-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Link2 className="w-4 h-4 text-indigo-500" />
@@ -162,7 +162,7 @@ function FindingCard({ finding }: { finding: AuditFinding }) {
   return (
     <div className="px-4 py-3 border-b border-gray-100 dark:border-white/[0.05] last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/[0.03] transition-colors">
       <div className="flex items-start gap-2.5 mb-1">
-        <span className={`mt-1.5 block w-2 h-2 rounded-full flex-shrink-0 ${severityDot[finding.severity] ?? 'bg-gray-300'}`} />
+        <span className={`mt-0.5 block w-2 h-2 rounded-full flex-shrink-0 ${severityDot[finding.severity] ?? 'bg-gray-300'}`} />
         <p className="font-semibold text-sm text-gray-900 dark:text-white leading-snug">{finding.title}</p>
       </div>
       <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-2 pl-4">{finding.description}</p>
@@ -185,7 +185,7 @@ function FindingCard({ finding }: { finding: AuditFinding }) {
 function FindingRow({ finding }: { finding: AuditFinding }) {
   return (
     <tr className="border-b border-gray-100 dark:border-white/[0.05] last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/[0.03] transition-colors">
-      <td className="pl-6 pr-3 py-4 w-4">
+      <td className="pl-6 pr-3 py-4 w-4 align-top pt-[18px]">
         <span className={`block w-2 h-2 rounded-full flex-shrink-0 ${severityDot[finding.severity] ?? 'bg-gray-300'}`} />
       </td>
       <td className="py-4 pr-4">
@@ -474,6 +474,7 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
 
           {/* Executive summary */}
           <div className="px-4 md:px-6 py-4 bg-gray-50/60 dark:bg-white/[0.03] border-b border-gray-100 dark:border-white/[0.06]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 dark:text-indigo-400 mb-2">Overview</p>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{result.executiveSummary}</p>
           </div>
 
@@ -486,9 +487,6 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
 
           {/* Core Web Vitals */}
           {result.pageSpeed && <CoreWebVitals ps={result.pageSpeed} />}
-
-          {/* Domain Authority */}
-          {result.ahrefs && <DomainAuthority data={result.ahrefs} />}
 
           {/* Findings */}
           <div className="px-3 md:px-6 pt-5 pb-2">
@@ -542,6 +540,15 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
 
         </div>
       </div>
+
+      {/* Domain Authority — standalone card outside main report card */}
+      {result.ahrefs && (
+        <div className="max-w-5xl mx-auto px-3 md:px-4 pb-4">
+          <div className="bg-white dark:bg-[#0c1120] border border-gray-100 dark:border-white/[0.07] rounded-2xl shadow-sm overflow-hidden">
+            <DomainAuthority data={result.ahrefs} />
+          </div>
+        </div>
+      )}
 
       {showLeadModal && (
         <LeadModal result={result} onClose={() => setShowLeadModal(false)} />
