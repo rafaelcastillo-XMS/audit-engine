@@ -1,5 +1,5 @@
 import { Document, Page, View, Text, Image, StyleSheet, Svg, Circle, Ellipse, Line } from '@react-pdf/renderer'
-import type { AuditResult, AuditFinding } from '@/lib/audit/types'
+import type { AuditResult, AuditFinding, AhrefsData } from '@/lib/audit/types'
 
 const C = {
   ink:         '#0f172a',
@@ -285,6 +285,40 @@ const S = StyleSheet.create({
     marginTop: 5,
   },
 
+  // ── Ahrefs metrics ──
+  ahrefsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 20,
+  },
+  ahrefsCard: {
+    flex: 1,
+    backgroundColor: C.bg,
+    borderRadius: 6,
+    border: '1pt solid #e2e8f0',
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+  },
+  ahrefsCardLabel: {
+    fontSize: 7,
+    color: C.muted,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  ahrefsCardValue: {
+    fontSize: 13,
+    fontFamily: 'Helvetica-Bold',
+    color: C.ink,
+  },
+  ahrefsSource: {
+    fontSize: 7,
+    color: C.muted,
+    textAlign: 'right',
+    marginTop: -14,
+    marginBottom: 20,
+  },
+
   empty: {
     fontSize: 9,
     color: C.muted,
@@ -468,6 +502,32 @@ function CriticalBlock({ findings }: { findings: AuditFinding[] }) {
   )
 }
 
+function AhrefsBlock({ data }: { data: AhrefsData }) {
+  const metrics = [
+    { label: 'Domain Rating', value: `${data.domainRating}/100` },
+    { label: 'Backlinks',     value: data.backlinks.toLocaleString() },
+    { label: 'Ref. Domains',  value: data.referringDomains.toLocaleString() },
+    { label: 'Organic Traffic', value: data.organicTraffic.toLocaleString() },
+  ]
+  return (
+    <View style={S.section}>
+      <View style={S.sectionHeader}>
+        <View style={[S.sectionDot, { backgroundColor: '#6366f1' }]} />
+        <Text style={S.sectionTitle}>Domain Authority</Text>
+        <Text style={[S.sectionCount, { color: '#6366f1' }]}>  Powered by Ahrefs</Text>
+      </View>
+      <View style={S.ahrefsRow}>
+        {metrics.map(({ label, value }) => (
+          <View key={label} style={S.ahrefsCard}>
+            <Text style={S.ahrefsCardLabel}>{label}</Text>
+            <Text style={S.ahrefsCardValue}>{value}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  )
+}
+
 export function AuditPdfDocument({ result }: { result: AuditResult }) {
   const domain = new URL(result.url).hostname
   const logoSrc = `${window.location.origin}/${encodeURIComponent('LOGO - BLACK BACKGROUND.webp')}`
@@ -542,6 +602,9 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
             <Text style={S.summaryLabel}>EXECUTIVE SUMMARY</Text>
             <Text style={S.summaryText}>{consequenceSummary}</Text>
           </View>
+
+          {/* Domain Authority (Ahrefs) */}
+          {result.ahrefs && <AhrefsBlock data={result.ahrefs} />}
 
           {/* Critical Issues */}
           {result.criticalIssues.length > 0 && (

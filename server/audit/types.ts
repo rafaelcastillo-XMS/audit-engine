@@ -51,6 +51,13 @@ export interface PageSpeedResult {
   ttfb: number
 }
 
+export interface AhrefsData {
+  domainRating: number
+  backlinks: number
+  referringDomains: number
+  organicTraffic: number
+}
+
 export interface AuditResult {
   id: string
   url: string
@@ -63,4 +70,5 @@ export interface AuditResult {
   opportunities: AuditFinding[]
   rawData: RawData
   pageSpeed?: PageSpeedResult
+  ahrefs?: AhrefsData
 }

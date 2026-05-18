@@ -8,6 +8,7 @@ import { analyzeHtml } from './audit/analyze-html'
 import { calculateScores } from './audit/scoring'
 import { generateFindings, generatePageSpeedFindings, buildExecutiveSummary } from './audit/recommendations'
 import { getPageSpeed } from './integrations/pagespeed'
+import { getAhrefsDomainData } from './integrations/ahrefs'
 import type { AuditResult } from './audit/types'
 
 const app = express()
@@ -59,10 +60,14 @@ app.post('/api/audit', async (req, res) => {
     }
 
     const psiKey = process.env.PAGESPEED_API_KEY
+    const ahrefsKey = process.env.AHREFS_API_KEY
 
-    const [rawData, pageSpeed] = await Promise.all([
+    const [rawData, pageSpeed, ahrefs] = await Promise.all([
       analyzeHtml(fetched.html, fetched.finalUrl),
       psiKey ? getPageSpeed(fetched.finalUrl, psiKey).catch(() => undefined) : Promise.resolve(undefined),
+      ahrefsKey
+        ? getAhrefsDomainData(fetched.finalUrl, { apiKey: ahrefsKey }).catch(() => undefined)
+        : Promise.resolve(undefined),
     ])
 
     const scores = calculateScores(rawData)
@@ -88,6 +93,7 @@ app.post('/api/audit', async (req, res) => {
       opportunities,
       rawData,
       pageSpeed,
+      ahrefs,
     }
 
     res.json(result)

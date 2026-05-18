@@ -1,9 +1,9 @@
 import { useState, lazy, Suspense } from 'react'
-import { FileDown, ExternalLink, AlertCircle, TrendingUp, Wrench, Check, ArrowUpRight, ArrowLeft, Sparkles } from 'lucide-react'
+import { FileDown, ExternalLink, AlertCircle, TrendingUp, Link2, Wrench, Check, ArrowUpRight, ArrowLeft, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { LeadModal } from '@/components/lead-modal'
-import type { AuditResult, AuditFinding, PageSpeedResult } from '@/lib/audit/types'
+import type { AuditResult, AuditFinding, PageSpeedResult, AhrefsData } from '@/lib/audit/types'
 import { scoreLabel } from '@/lib/utils'
 
 const PdfExportButton = lazy(() => import('@/components/pdf-export-button'))
@@ -89,6 +89,43 @@ function CoreWebVitals({ ps }: { ps: PageSpeedResult }) {
         })}
       </div>
       <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">Measured on mobile · Powered by Google PageSpeed Insights</p>
+    </div>
+  )
+}
+
+// ── Domain Authority (Ahrefs) ────────────────────────────
+function DomainAuthority({ data }: { data: AhrefsData }) {
+  const metrics = [
+    { label: 'Domain Rating', value: `${data.domainRating}/100` },
+    { label: 'Backlinks', value: data.backlinks.toLocaleString() },
+    { label: 'Ref. Domains', value: data.referringDomains.toLocaleString() },
+    { label: 'Organic Traffic', value: data.organicTraffic.toLocaleString() },
+  ]
+  const drColor =
+    data.domainRating >= 60 ? 'text-green-600 dark:text-green-400'
+    : data.domainRating >= 30 ? 'text-amber-600 dark:text-amber-400'
+    : 'text-red-600 dark:text-red-400'
+
+  return (
+    <div className="border-t border-gray-100 dark:border-white/[0.06] px-4 md:px-6 py-5">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Link2 className="w-4 h-4 text-indigo-500" />
+          <span className="font-semibold text-gray-800 dark:text-white text-sm">Domain Authority</span>
+        </div>
+        <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border border-indigo-200 bg-indigo-50 dark:border-indigo-700/40 dark:bg-indigo-900/20 ${drColor}`}>
+          DR {data.domainRating}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {metrics.map(({ label, value }) => (
+          <div key={label} className="rounded-xl border border-gray-100 dark:border-white/[0.07] bg-gray-50/60 dark:bg-white/[0.03] p-3 text-center">
+            <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 mb-1">{label}</div>
+            <div className={`text-base font-bold text-gray-900 dark:text-white ${label === 'Domain Rating' ? drColor : ''}`}>{value}</div>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">Powered by Ahrefs</p>
     </div>
   )
 }
@@ -316,6 +353,12 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
           </div>
         )}
 
+        {result.ahrefs && (
+          <div className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.07] rounded-2xl overflow-hidden">
+            <DomainAuthority data={result.ahrefs} />
+          </div>
+        )}
+
         <div>
           <Tabs defaultValue="all">
             <div className="flex items-center justify-between mb-3">
@@ -440,6 +483,9 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
 
           {/* Core Web Vitals */}
           {result.pageSpeed && <CoreWebVitals ps={result.pageSpeed} />}
+
+          {/* Domain Authority */}
+          {result.ahrefs && <DomainAuthority data={result.ahrefs} />}
 
           {/* Findings */}
           <div className="px-3 md:px-6 pt-5 pb-2">
