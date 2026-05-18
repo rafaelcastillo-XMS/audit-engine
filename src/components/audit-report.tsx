@@ -95,16 +95,19 @@ function CoreWebVitals({ ps }: { ps: PageSpeedResult }) {
 
 // ── Domain Authority (Ahrefs) ────────────────────────────
 function DomainAuthority({ data }: { data: AhrefsData }) {
-  const metrics = [
-    { label: 'Domain Rating', value: `${data.domainRating}/100` },
-    { label: 'Backlinks', value: data.backlinks.toLocaleString() },
-    { label: 'Ref. Domains', value: data.referringDomains.toLocaleString() },
-    { label: 'Organic Traffic', value: data.organicTraffic.toLocaleString() },
-  ]
   const drColor =
     data.domainRating >= 60 ? 'text-green-600 dark:text-green-400'
     : data.domainRating >= 30 ? 'text-amber-600 dark:text-amber-400'
     : 'text-red-600 dark:text-red-400'
+
+  const metrics = [
+    { label: 'Domain Rating',    value: `${data.domainRating}/100`,              highlight: true },
+    { label: 'Ahrefs Rank',      value: `#${data.ahrefsRank.toLocaleString()}`,  highlight: false },
+    { label: 'Backlinks',        value: data.backlinks.toLocaleString(),          highlight: false },
+    { label: 'Ref. Domains',     value: data.referringDomains.toLocaleString(),  highlight: false },
+    { label: 'Organic Traffic',  value: data.organicTraffic.toLocaleString(),    highlight: false },
+    { label: 'Organic Keywords', value: data.organicKeywords.toLocaleString(),   highlight: false },
+  ]
 
   return (
     <div className="border-t border-gray-100 dark:border-white/[0.06] px-4 md:px-6 py-5">
@@ -114,14 +117,14 @@ function DomainAuthority({ data }: { data: AhrefsData }) {
           <span className="font-semibold text-gray-800 dark:text-white text-sm">Domain Authority</span>
         </div>
         <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border border-indigo-200 bg-indigo-50 dark:border-indigo-700/40 dark:bg-indigo-900/20 ${drColor}`}>
-          DR {data.domainRating}
+          DR {data.domainRating}/100
         </span>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {metrics.map(({ label, value }) => (
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+        {metrics.map(({ label, value, highlight }) => (
           <div key={label} className="rounded-xl border border-gray-100 dark:border-white/[0.07] bg-gray-50/60 dark:bg-white/[0.03] p-3 text-center">
             <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 mb-1">{label}</div>
-            <div className={`text-base font-bold text-gray-900 dark:text-white ${label === 'Domain Rating' ? drColor : ''}`}>{value}</div>
+            <div className={`text-base font-bold ${highlight ? drColor : 'text-gray-900 dark:text-white'}`}>{value}</div>
           </div>
         ))}
       </div>

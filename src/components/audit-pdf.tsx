@@ -504,10 +504,12 @@ function CriticalBlock({ findings }: { findings: AuditFinding[] }) {
 
 function AhrefsBlock({ data }: { data: AhrefsData }) {
   const metrics = [
-    { label: 'Domain Rating', value: `${data.domainRating}/100` },
-    { label: 'Backlinks',     value: data.backlinks.toLocaleString() },
-    { label: 'Ref. Domains',  value: data.referringDomains.toLocaleString() },
-    { label: 'Organic Traffic', value: data.organicTraffic.toLocaleString() },
+    { label: 'Domain Rating',    value: `${data.domainRating}/100` },
+    { label: 'Ahrefs Rank',      value: `#${data.ahrefsRank.toLocaleString()}` },
+    { label: 'Backlinks',        value: data.backlinks.toLocaleString() },
+    { label: 'Ref. Domains',     value: data.referringDomains.toLocaleString() },
+    { label: 'Organic Traffic',  value: data.organicTraffic.toLocaleString() },
+    { label: 'Organic Keywords', value: data.organicKeywords.toLocaleString() },
   ]
   return (
     <View style={S.section}>

@@ -6,9 +6,11 @@ export interface AhrefsConfig {
 
 export interface AhrefsDomainData {
   domainRating: number
+  ahrefsRank: number
   backlinks: number
   referringDomains: number
   organicTraffic: number
+  organicKeywords: number
 }
 
 export async function getAhrefsDomainData(
@@ -16,32 +18,32 @@ export async function getAhrefsDomainData(
   config: AhrefsConfig
 ): Promise<AhrefsDomainData> {
   const target = domain.replace(/^https?:\/\//, '').replace(/\/$/, '')
-  const today = new Date().toISOString().slice(0, 10)
+  const date = new Date().toISOString().slice(0, 10)
+  const headers = { Authorization: `Bearer ${config.apiKey}` }
 
-  const url = new URL('https://api.ahrefs.com/v3/site-explorer/overview')
-  url.searchParams.set('target', target)
-  url.searchParams.set('date', today)
-  url.searchParams.set('volume_mode', 'monthly')
+  const base = 'https://api.ahrefs.com/v3/site-explorer'
+  const params = new URLSearchParams({ target, date })
+  const paramsMode = new URLSearchParams({ target, date, mode: 'domain' })
 
-  const res = await fetch(url.toString(), {
-    headers: { Authorization: `Bearer ${config.apiKey}` },
-  })
+  const [drRes, backlinksRes, metricsRes] = await Promise.all([
+    fetch(`${base}/domain-rating?${params}`, { headers }),
+    fetch(`${base}/backlinks-stats?${paramsMode}`, { headers }),
+    fetch(`${base}/metrics?${paramsMode}`, { headers }),
+  ])
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => '')
-    throw new Error(`Ahrefs API error ${res.status}: ${text}`)
-  }
-
-  const json = await res.json() as Record<string, unknown>
-
-  // v3 returns data nested under the target key or directly at root depending on plan
-  const data = (json.domain ?? json) as Record<string, unknown>
+  const [drJson, backlinksJson, metricsJson] = await Promise.all([
+    drRes.json() as Promise<{ domain_rating?: { domain_rating?: number; ahrefs_rank?: number } }>,
+    backlinksRes.json() as Promise<{ metrics?: { live?: number; live_refdomains?: number } }>,
+    metricsRes.json() as Promise<{ metrics?: { org_traffic?: number; org_keywords?: number } }>,
+  ])
 
   return {
-    domainRating:    toNum(data.domain_rating ?? data.dr),
-    backlinks:       toNum(data.backlinks),
-    referringDomains: toNum(data.ref_domains ?? data.referring_domains ?? data.refdomains),
-    organicTraffic:  toNum(data.organic_traffic ?? data.org_traffic),
+    domainRating:     toNum(drJson.domain_rating?.domain_rating),
+    ahrefsRank:       toNum(drJson.domain_rating?.ahrefs_rank),
+    backlinks:        toNum(backlinksJson.metrics?.live),
+    referringDomains: toNum(backlinksJson.metrics?.live_refdomains),
+    organicTraffic:   toNum(metricsJson.metrics?.org_traffic),
+    organicKeywords:  toNum(metricsJson.metrics?.org_keywords),
   }
 }
 
