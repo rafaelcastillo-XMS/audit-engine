@@ -7,16 +7,22 @@ export const Route = createRootRoute({
 })
 
 function useDarkMode() {
-  const [dark, setDark] = useState(() => {
-    const stored = localStorage.getItem('theme')
-    if (stored) return stored === 'dark'
-    return !window.matchMedia('(prefers-color-scheme: light)').matches
-  })
+  const mql = window.matchMedia('(prefers-color-scheme: dark)')
+  const [dark, setDark] = useState(() => mql.matches)
+
+  // Follow system preference changes automatically
+  useEffect(() => {
+    const handler = (e: MediaQueryListEvent) => setDark(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const root = document.documentElement
-    if (dark) { root.classList.add('dark'); localStorage.setItem('theme', 'dark') }
-    else { root.classList.remove('dark'); localStorage.setItem('theme', 'light') }
+    if (dark) root.classList.add('dark')
+    else root.classList.remove('dark')
   }, [dark])
+
   return [dark, setDark] as const
 }
 
