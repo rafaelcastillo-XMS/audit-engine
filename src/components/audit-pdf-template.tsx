@@ -6,7 +6,6 @@ import {
   ChartColumnBig,
   CheckCircle2,
   ExternalLink,
-  FileDown,
   FileText,
   Globe2,
   Lock,
@@ -342,7 +341,7 @@ function AhrefsBand({ result }: { result: AuditResult }) {
     <div className="overflow-hidden border-[3px] border-[#0f172a] bg-[#0f172a]">
       <div className="flex items-center justify-between gap-4 border-b border-white/10 px-6 py-4 text-white">
         <div>
-          <div className="text-[18px] font-bold uppercase tracking-[0.04em]">Deep Audit Result</div>
+          <div className="text-[18px] font-bold uppercase tracking-[0.04em]">Initial Audit Results</div>
           <div className="mt-1 text-sm text-white/70">Powered by Ahrefs</div>
         </div>
         <img src="/logos/ahrefs.png" alt="Ahrefs" className="h-8 w-auto object-contain" />
@@ -381,7 +380,7 @@ function OpportunityList({ title, items }: { title: string; items: AuditFinding[
         {items.map((item, index) => (
           <article
             key={item.id}
-            className={`report-avoid-break grid grid-cols-[64px_1fr_160px] items-start gap-4 px-6 py-5 ${index < items.length - 1 ? 'border-b border-[#edf2fb]' : ''}`}
+            className={`report-avoid-break grid grid-cols-[64px_1fr_160px] items-start gap-4 py-5 ${item.severity === 'critical' ? 'pl-5 pr-6 border-l-4 border-l-red-500 bg-red-50/30' : 'px-6'} ${index < items.length - 1 ? 'border-b border-[#edf2fb]' : ''}`}
           >
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1560ff] text-white shadow-[0_10px_24px_rgba(21,96,255,0.16)]">
               {item.category === 'seo' && <Search className="h-6 w-6" />}
@@ -419,7 +418,7 @@ function DetailedFindingList({ title, items }: { title: string; items: AuditFind
       <div className={`mb-3 text-[17px] font-bold uppercase tracking-[0.02em] ${categoryTone[items[0].category]}`}>{title}</div>
       <div className="space-y-3">
         {items.map((item) => (
-          <article key={item.id} className="report-avoid-break border border-[#dce7fb] bg-white px-5 py-4">
+          <article key={item.id} className={`report-avoid-break border bg-white px-5 py-4 ${item.severity === 'critical' ? 'border-l-4 border-l-red-500 border-t-[#dce7fb] border-r-[#dce7fb] border-b-[#dce7fb] bg-red-50/40' : 'border-[#dce7fb]'}`}>
             <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
               <h3 className="text-[18px] font-bold text-[#172a58]">{item.title}</h3>
               <div className={`inline-flex px-3 py-2 text-[13px] font-bold uppercase ${impactTone[item.impact]}`}>
@@ -471,7 +470,7 @@ export function AuditPdfTemplate({
   const growthItems = buildOpportunityItems(result)
 
   return (
-    <div className="report-shell mx-auto w-full max-w-[1100px] px-4 py-8 print:max-w-none print:px-0 print:py-0">
+    <div className="report-shell mx-auto w-full max-w-[1100px] px-4 py-8 bg-[#f4f7fd] dark:bg-[#f4f7fd] print:max-w-none print:px-0 print:py-0">
       {showExport && (
         <div className="mb-5 flex items-center justify-between gap-3 print:hidden">
           <div className="flex items-center gap-4">
@@ -504,7 +503,7 @@ export function AuditPdfTemplate({
         </div>
       )}
 
-      <article className="report-page overflow-hidden border border-[#d5e3fb] bg-[#fafaf7] shadow-[0_24px_70px_rgba(15,23,42,0.10)] print:border-0 print:shadow-none">
+      <article className="report-page overflow-hidden border border-[#d5e3fb] bg-[#fafaf7] dark:bg-[#fafaf7] dark:border-[#d5e3fb] shadow-[0_24px_70px_rgba(15,23,42,0.10)] print:border-0 print:shadow-none">
         <header className="border-b border-[#dce7fb] bg-[#fffdfa] px-10 pt-10 pb-0">
           <div className="mb-8 flex items-start justify-between gap-8">
             <div className="flex items-center gap-4">
@@ -518,7 +517,7 @@ export function AuditPdfTemplate({
 
           <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr] md:items-center">
             <div>
-              <h1 className="max-w-[580px] text-[54px] font-bold leading-[1.06] tracking-[-0.03em] text-[#1a2d5a]">
+              <h1 className="max-w-[580px] text-[54px] font-bold leading-[1.06] tracking-[-0.03em] text-[#1a2d5a] [hyphens:none]">
                 AI Search & Digital Visibility Audit
               </h1>
               <p className="mt-4 text-[22px] font-semibold text-[#304975]">SEO · AEO · GEO Intelligence Assessment</p>
@@ -595,7 +594,7 @@ export function AuditPdfTemplate({
 
           <section className="mb-8">
             <SectionTitle
-              title="Complete Technical Assessment"
+              title="Initial Technical Assessment"
               meta={`${activeFindings.length} active findings`}
               titleClassName="text-[#111111]"
               metaClassName="text-[#6f7c98]"
@@ -641,7 +640,7 @@ export function AuditPdfTemplate({
         <footer className="flex items-center justify-between gap-4 px-10 py-5 text-[14px] text-[#6d7ea5]">
           <div className="flex items-center gap-3">
             <img src="/logo-icon.png" alt="XMS" className="h-8 w-8" />
-            <span>Xperience AI Marketing Solutions</span>
+            <span>XMS Ai</span>
           </div>
           <span className="text-[#111111]">xperienceusa.com</span>
         </footer>

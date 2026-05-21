@@ -852,7 +852,7 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
   const opportunityItems = buildOpportunityItems(result)
 
   return (
-    <Document title={`XMS AI Visibility Audit — ${domain}`} author="XMS · Xperience AI Marketing">
+    <Document title={`XMS AI Visibility Audit — ${domain}`} author="XMS Ai">
       
       {/* PAGE 1: Header, Scores (Gauges), AI Search Access, Ahrefs */}
       <Page size="A4" style={S.page}>
@@ -1051,7 +1051,7 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
         <View style={S.footer} fixed>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <Image style={{ width: 8, height: 8, objectFit: 'contain' }} src={logoIconSrc} />
-            <Text style={S.footerBrand}>Xperience AI Marketing Solutions</Text>
+            <Text style={S.footerBrand}>XMS Ai</Text>
           </View>
           <Text style={S.footerUrl}>xperienceusa.com</Text>
         </View>
@@ -1125,13 +1125,13 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
         <View style={S.footer} fixed>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <Image style={{ width: 8, height: 8, objectFit: 'contain' }} src={logoIconSrc} />
-            <Text style={S.footerBrand}>Xperience AI Marketing Solutions</Text>
+            <Text style={S.footerBrand}>XMS Ai</Text>
           </View>
           <Text style={S.footerUrl}>xperienceusa.com</Text>
         </View>
       </Page>
 
-      {/* PAGE 3: Complete Technical Assessment & CTA Banner */}
+      {/* PAGE 3: Initial Technical Assessment & CTA Banner */}
       <Page size="A4" style={[S.page, { paddingTop: 40 }]}>
         {/* Mini Header */}
         <View fixed style={S.miniHeader}>
@@ -1142,7 +1142,7 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
         <View style={{ paddingHorizontal: 40, paddingTop: 16, paddingBottom: 24 }}>
           {/* Technical findings */}
           <View style={S.sectionTitleRow}>
-            <Text style={[S.sectionTitleText, { color: '#111111' }]}>COMPLETE TECHNICAL ASSESSMENT</Text>
+            <Text style={[S.sectionTitleText, { color: '#111111' }]}>INITIAL TECHNICAL ASSESSMENT</Text>
             <Text style={S.sectionTitleMeta}>{seoFindings.length + aeoFindings.length + geoFindings.length} active findings</Text>
           </View>
 
@@ -1171,7 +1171,7 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
         <View style={S.footer} fixed>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <Image style={{ width: 8, height: 8, objectFit: 'contain' }} src={logoIconSrc} />
-            <Text style={S.footerBrand}>Xperience AI Marketing Solutions</Text>
+            <Text style={S.footerBrand}>XMS Ai</Text>
           </View>
           <Text style={S.footerUrl}>xperienceusa.com</Text>
         </View>
