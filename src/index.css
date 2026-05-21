@@ -77,10 +77,62 @@ body {
   background-size: 24px 24px;
 }
 
+.report-avoid-break {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.report-shell,
+.report-shell * {
+  color-scheme: light !important;
+}
+
+.report-page {
+  background: #fafaf7;
+}
+
+.dark .report-shell,
+.dark .report-shell * {
+  color-scheme: light !important;
+}
+
+.dark .report-page {
+  background: #fafaf7 !important;
+}
+
 @media print {
   .print\:hidden { display: none !important; }
 
-  body { background: #fff; }
+  html, body {
+    background: #fff;
+  }
+
+  body {
+    margin: 0;
+    color: #0f172a;
+  }
+
+  #root {
+    min-height: auto;
+  }
+
+  .report-shell {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .report-page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    overflow: visible !important;
+    background: #fafaf7 !important;
+  }
+
+  .report-hero {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
 
   /* Ocultar botones de acción del reporte */
   button { display: none !important; }
@@ -88,11 +140,8 @@ body {
   /* Quitar sombras y bordes que no se ven bien en PDF */
   * { box-shadow: none !important; }
 
-  /* Evitar cortes de página dentro de cards */
-  .space-y-8 > * { break-inside: avoid; }
-
-  /* Logo de la agencia al pie del PDF */
   @page {
-    margin: 1.5cm;
+    size: A4;
+    margin: 12mm;
   }
 }

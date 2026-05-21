@@ -6,8 +6,9 @@ const C = {
   slate:       '#1e293b',
   muted:       '#64748b',
   border:      '#e2e8f0',
-  bg:          '#f8fafc',
+  bg:          '#fafaf7',
   white:       '#ffffff',
+  warmWhite:   '#fffdfa',
   blue:        '#1d4ed8',
   blueLight:   '#eff6ff',
   blueBorder:  '#bfdbfe',
@@ -29,7 +30,7 @@ const C = {
 
 const S = StyleSheet.create({
   page: {
-    backgroundColor: C.white,
+    backgroundColor: C.bg,
     paddingTop: 20,
     paddingBottom: 56,
     fontFamily: 'Helvetica',
@@ -42,7 +43,7 @@ const S = StyleSheet.create({
     backgroundColor: C.ink,
     paddingHorizontal: 32,
     paddingTop: 20,
-    paddingBottom: 0,
+    paddingBottom: 8,
     marginTop: -20, // cancel page paddingTop so header bleeds to top edge
   },
   headerTop: {
@@ -86,9 +87,9 @@ const S = StyleSheet.create({
     color: '#93c5fd',
   },
   headerDate: {
-    fontSize: 9,
+    fontSize: 7.5,
     color: C.softOnDark,
-    marginBottom: 18,
+    marginBottom: 24,
   },
 
   // ── Mini brand strip for pages 2+ (fixed, absolute) ──
@@ -227,9 +228,15 @@ const S = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 8,
     paddingBottom: 5,
     borderBottom: '1.5pt solid #e2e8f0',
+  },
+  sectionHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 1,
   },
   sectionDot: {
     width: 8,
@@ -362,6 +369,7 @@ const S = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: { fontSize: 8, color: C.muted },  // #64748b on white = 4.75:1 ✓
+  footerTextDark: { fontSize: 8, color: C.ink },
 })
 
 function scoreColor(n: number) {
@@ -630,8 +638,11 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
           {/* Full Technical Findings */}
           <View style={S.section}>
             <View style={S.sectionHeader}>
-              <View style={[S.sectionDot, { backgroundColor: C.indigo }]} />
-              <Text style={S.sectionTitle}>Complete Technical Assessment</Text>
+              <View style={S.sectionHeaderLeft}>
+                <View style={[S.sectionDot, { backgroundColor: C.indigo }]} />
+                <Text style={[S.sectionTitle, { color: '#111111' }]}>Complete Technical Assessment</Text>
+              </View>
+              <Text style={S.sectionCount}>{seoFindings.length + aeoFindings.length + geoFindings.length} active findings</Text>
             </View>
             {seoFindings.length > 0 && (
               <>
@@ -661,7 +672,7 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
         <View style={S.footer} fixed>
           <Text style={S.footerBrand}>XMS · Xperience AI Marketing Solutions</Text>
           <View style={S.footerRight}>
-            <Text style={S.footerText}>xperienceusa.com</Text>
+            <Text style={S.footerTextDark}>xperienceusa.com</Text>
             <Text style={S.footerText} render={({ pageNumber, totalPages }) =>
               `Page ${pageNumber} of ${totalPages}`
             } />

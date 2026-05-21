@@ -1,12 +1,11 @@
-import { useState, lazy, Suspense } from 'react'
-import { FileDown, ExternalLink, AlertCircle, TrendingUp, Link2, Wrench, Check, ArrowUpRight, ArrowLeft, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { ExternalLink, AlertCircle, TrendingUp, Link2, Wrench, Check, ArrowUpRight, ArrowLeft, Sparkles } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { LeadModal } from '@/components/lead-modal'
+import { AuditPdfTemplate } from '@/components/audit-pdf-template'
+import PdfExportButton from '@/components/pdf-export-button'
 import type { AuditResult, AuditFinding, PageSpeedResult, AhrefsData } from '@/lib/audit/types'
 import { scoreLabel } from '@/lib/utils'
-
-const PdfExportButton = lazy(() => import('@/components/pdf-export-button'))
 
 interface AuditReportProps {
   result: AuditResult
@@ -342,6 +341,16 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
   const aeoFindings = allFindings.filter(f => f.category === 'aeo')
   const geoFindings = allFindings.filter(f => f.category === 'geo')
 
+  if (mode === 'internal') {
+    return (
+      <div className="w-full">
+        <div className={inline ? 'border-t border-gray-100 dark:border-white/[0.07]' : 'pt-6 pb-12'}>
+          <AuditPdfTemplate result={result} showExport />
+        </div>
+      </div>
+    )
+  }
+
   if (inline) {
     return (
       <div className="w-full max-w-5xl mx-auto px-4 py-8 space-y-6">
@@ -358,14 +367,7 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
             </a>
             <p className="text-xs text-gray-400 mt-0.5">{new Date(result.createdAt).toLocaleString()}</p>
           </div>
-          <Suspense fallback={
-            <Button variant="outline" size="sm" disabled className="gap-1.5">
-              <FileDown className="w-3.5 h-3.5" />
-              Preparing PDF…
-            </Button>
-          }>
-            <PdfExportButton result={result} />
-          </Suspense>
+          <PdfExportButton />
         </div>
 
         <div className="bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.07] rounded-2xl overflow-hidden">
@@ -445,14 +447,7 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
           <h1 className="text-sm md:text-lg font-semibold text-blue-200/70 tracking-wide mb-3">
             SEO · AEO · GEO Report
           </h1>
-          <p className="text-blue-200/50 text-xs mb-6 md:mb-8">
-            {new Date(result.createdAt).toLocaleString()}
-            {mode === 'internal' && (
-              <span className="ml-2 text-blue-400 border border-blue-700 bg-blue-900/40 px-2 py-0.5 rounded-full text-[10px] font-semibold">
-                Internal
-              </span>
-            )}
-          </p>
+          <p className="text-blue-200/50 text-xs mb-6 md:mb-8">{new Date(result.createdAt).toLocaleString()}</p>
 
           {mode === 'public' && (
             <button
@@ -463,16 +458,6 @@ export function AuditReport({ result, mode = 'public', onBack, backLabel = 'Back
               Fix My Site
               <ArrowUpRight className="w-4 h-4" />
             </button>
-          )}
-          {mode === 'internal' && (
-            <Suspense fallback={
-              <Button variant="outline" size="sm" disabled className="gap-1.5 border-white/20 text-white/60">
-                <FileDown className="w-3.5 h-3.5" />
-                Preparing PDF…
-              </Button>
-            }>
-              <PdfExportButton result={result} />
-            </Suspense>
           )}
         </div>
       </div>
