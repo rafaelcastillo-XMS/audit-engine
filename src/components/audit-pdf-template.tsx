@@ -18,6 +18,7 @@ import {
   XCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import PdfExportButton from '@/components/pdf-export-button'
 import { scoreLabel } from '@/lib/utils'
 import type { AuditFinding, AuditResult } from '@/lib/audit/types'
 
@@ -499,10 +500,7 @@ export function AuditPdfTemplate({
               </p>
             </div>
           </div>
-          <Button onClick={() => window.print()} className="gap-2 cursor-pointer">
-            <FileDown className="h-4 w-4" />
-            Export PDF
-          </Button>
+          <PdfExportButton result={result} variant="default" size="default" className="gap-2" />
         </div>
       )}
 
