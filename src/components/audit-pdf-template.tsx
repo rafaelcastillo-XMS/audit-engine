@@ -1,4 +1,5 @@
 import {
+  ArrowLeft,
   ArrowRight,
   Brain,
   CalendarDays,
@@ -432,7 +433,21 @@ function DetailedFindingList({ title, items }: { title: string; items: AuditFind
   )
 }
 
-export function AuditPdfTemplate({ result, showExport = false }: { result: AuditResult; showExport?: boolean }) {
+export function AuditPdfTemplate({
+  result,
+  showExport = false,
+  mode = 'internal',
+  onBack,
+  backLabel,
+  onCtaClick,
+}: {
+  result: AuditResult
+  showExport?: boolean
+  mode?: 'public' | 'internal'
+  onBack?: () => void
+  backLabel?: string
+  onCtaClick?: () => void
+}) {
   const domain = new URL(result.url).hostname
   const createdAt = new Date(result.createdAt)
   const dateLabel = createdAt.toLocaleDateString('en-US', {
@@ -458,11 +473,33 @@ export function AuditPdfTemplate({ result, showExport = false }: { result: Audit
     <div className="report-shell mx-auto w-full max-w-[1100px] px-4 py-8 print:max-w-none print:px-0 print:py-0">
       {showExport && (
         <div className="mb-5 flex items-center justify-between gap-3 print:hidden">
-          <div>
-            <p className="text-sm font-semibold text-slate-900">PDF Template Preview</p>
-            <p className="text-xs text-slate-500">This internal view mirrors the report layout that will be exported.</p>
+          <div className="flex items-center gap-4">
+            {onBack && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onBack}
+                  className="gap-1.5 text-slate-600 hover:text-slate-950 cursor-pointer"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  {backLabel}
+                </Button>
+                <div className="h-6 w-px bg-slate-200" />
+              </>
+            )}
+            <div>
+              <p className="text-sm font-semibold text-slate-900">
+                {mode === 'internal' ? 'PDF Template Preview' : 'Website Audit Report'}
+              </p>
+              <p className="text-xs text-slate-500">
+                {mode === 'internal'
+                  ? 'This internal view mirrors the report layout that will be exported.'
+                  : `Report for ${domain}`}
+              </p>
+            </div>
           </div>
-          <Button onClick={() => window.print()} className="gap-2">
+          <Button onClick={() => window.print()} className="gap-2 cursor-pointer">
             <FileDown className="h-4 w-4" />
             Export PDF
           </Button>
@@ -584,10 +621,20 @@ export function AuditPdfTemplate({ result, showExport = false }: { result: Audit
                 </div>
               </div>
               <div className="flex justify-start md:justify-end">
-                <div className="inline-flex items-center gap-4 rounded-full border-[3px] border-white/45 bg-white/12 px-7 py-4 text-[16px] font-bold tracking-[0.02em] text-white backdrop-blur-sm">
-                  <span>Phone: (772) 905-3005</span>
-                  <ArrowRight className="h-5 w-5" />
-                </div>
+                {onCtaClick ? (
+                  <button
+                    onClick={onCtaClick}
+                    className="inline-flex items-center gap-4 rounded-full border-[3px] border-[#2b6bff] bg-white hover:bg-white/95 px-7 py-4 text-[16px] font-bold tracking-[0.02em] text-[#1257f2] cursor-pointer transition-colors shadow-lg"
+                  >
+                    <span>Get Free Strategy Call</span>
+                    <ArrowRight className="h-5 w-5" />
+                  </button>
+                ) : (
+                  <div className="inline-flex items-center gap-4 rounded-full border-[3px] border-white/45 bg-white/12 px-7 py-4 text-[16px] font-bold tracking-[0.02em] text-white backdrop-blur-sm">
+                    <span>Phone: (772) 905-3005</span>
+                    <ArrowRight className="h-5 w-5" />
+                  </div>
+                )}
               </div>
             </div>
           </section>
