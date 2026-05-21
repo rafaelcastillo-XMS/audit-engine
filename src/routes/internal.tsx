@@ -50,7 +50,7 @@ function InternalPage() {
           </div>
 
           {/* Form */}
-          <div className="bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/10 rounded-3xl p-4 shadow-lg shadow-gray-100/50 dark:shadow-none">
+          <div className="bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/10 rounded-full p-4 shadow-lg shadow-gray-100/50 dark:shadow-none">
             <AuditUrlForm onResult={handleResult} />
           </div>
 

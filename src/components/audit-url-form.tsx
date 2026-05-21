@@ -81,14 +81,14 @@ export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrl
     <div className="w-full">
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div className={`flex gap-2 ${compact ? '' : 'flex-col sm:flex-row'}`}>
-          <div className="relative flex-1">
+          <div className="relative flex-1 rounded-full">
             <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             <Input
               {...register('url')}
               type="url"
               placeholder="https://yourwebsite.com"
               disabled={isRunning}
-              className={`pl-9 ${compact ? 'h-10' : 'h-14 text-base'} border-gray-200 focus-visible:ring-blue-500`}
+              className={`pl-9 rounded-full ${compact ? 'h-10' : 'h-14 text-base'} border-gray-200 focus-visible:ring-blue-500`}
               autoComplete="off"
               autoCapitalize="none"
               spellCheck={false}
@@ -98,7 +98,7 @@ export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrl
             type="submit"
             disabled={isRunning}
             size={compact ? 'default' : 'lg'}
-            className={`gap-2 bg-[#22C55E] hover:bg-[#16a34a] text-white border-0 shadow-lg shadow-green-600/20 hover:shadow-green-500/30 transition-all duration-200 ${compact ? 'px-4' : 'px-7 h-14 text-base font-semibold'} whitespace-nowrap`}
+            className={`gap-2 bg-[#22C55E] hover:bg-[#16a34a] text-white border-0 rounded-full transition-all duration-200 ${compact ? 'px-4' : 'px-7 h-14 text-base font-semibold'} whitespace-nowrap`}
           >
             {isRunning ? (
               <>
@@ -118,7 +118,7 @@ export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrl
           <p className="mt-2 text-sm text-red-500">{errors.url.message}</p>
         )}
         {error && (
-          <div className="mt-3 flex gap-3 items-start rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mt-3 flex gap-3 items-start rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             <ShieldX className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-500" />
             <span>{error}</span>
           </div>
@@ -140,9 +140,8 @@ export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrl
               <div
                 key={s}
                 title={s}
-                className={`h-1 rounded-full flex-1 transition-all duration-500 ${
-                  i < step ? 'bg-blue-500' : i === step ? 'bg-blue-300' : 'bg-gray-100 dark:bg-gray-700'
-                }`}
+                className={`h-1 rounded-full flex-1 transition-all duration-500 ${i < step ? 'bg-blue-500' : i === step ? 'bg-blue-300' : 'bg-gray-100 dark:bg-gray-700'
+                  }`}
               />
             ))}
           </div>
