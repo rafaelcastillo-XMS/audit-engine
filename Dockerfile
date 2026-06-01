@@ -1,17 +1,26 @@
-FROM node:22-alpine
-
+# ── Stage 1: Build Vite frontend ─────────────────────────────────────────────
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
 
 COPY . .
-
 RUN npm run build
+
+# ── Stage 2: Production runtime (no dev deps, smaller image) ─────────────────
+FROM node:22-alpine
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# Server source + built frontend assets
+COPY server/ ./server/
+COPY --from=builder /app/dist ./dist/
 
 EXPOSE 3001
 
-ENV NODE_ENV=production
-ENV PORT=3001
-
-CMD ["node", "--import", "tsx/esm", "server/index.ts"]
+CMD ["./node_modules/.bin/tsx", "server/index.ts"]
