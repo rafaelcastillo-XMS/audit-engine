@@ -88,14 +88,14 @@ function Gauge({ score, accent }: { score: number; accent: string }) {
   return (
     <svg viewBox="0 0 132 84" className="h-[78px] w-[132px]">
       <path
-        d="M 18 62 A 48 48 0 0 1 114 62"
+        d="M 18 56 A 48 48 0 0 1 114 56"
         fill="none"
         stroke="#e8eefb"
         strokeWidth="8"
         strokeLinecap="round"
       />
       <path
-        d="M 18 62 A 48 48 0 0 1 114 62"
+        d="M 18 56 A 48 48 0 0 1 114 56"
         fill="none"
         stroke={accent}
         strokeWidth="8"
@@ -132,7 +132,7 @@ function ScoreGaugeCard({
 
       <div className="relative mb-4 mt-2 flex justify-center">
         <Gauge score={score} accent={tone.accent} />
-        <div className="absolute inset-x-0 top-[30px] text-center">
+        <div className="absolute inset-x-0 top-[38px] text-center">
           <div className={`text-[30px] font-bold leading-none tracking-[-0.03em] ${tone.value}`}>{Math.round(score)}%</div>
           <div className="mt-1 text-[10px] font-medium uppercase tracking-[0.08em] text-[#8c9ab8]">{helper}</div>
         </div>
@@ -627,10 +627,13 @@ export function AuditPdfTemplate({
                     <ArrowRight className="h-5 w-5" />
                   </button>
                 ) : (
-                  <div className="inline-flex items-center gap-4 rounded-full border-[3px] border-white/45 bg-white/12 px-7 py-4 text-[16px] font-bold tracking-[0.02em] text-white backdrop-blur-sm">
+                  <a
+                    href="tel:+17729053005"
+                    className="inline-flex items-center gap-4 rounded-full border-[3px] border-white/45 bg-white/12 px-7 py-4 text-[16px] font-bold tracking-[0.02em] text-white backdrop-blur-sm no-underline hover:bg-white/20 transition-colors"
+                  >
                     <span>Phone: (772) 905-3005</span>
                     <ArrowRight className="h-5 w-5" />
-                  </div>
+                  </a>
                 )}
               </div>
             </div>
@@ -642,7 +645,7 @@ export function AuditPdfTemplate({
             <img src="/logo-icon.png" alt="XMS" className="h-8 w-8" />
             <span>XMS Ai</span>
           </div>
-          <span className="text-[#111111]">xperienceusa.com</span>
+          <span className="text-[#111111] font-semibold uppercase tracking-wide">Xperience AI Marketing</span>
         </footer>
       </article>
     </div>

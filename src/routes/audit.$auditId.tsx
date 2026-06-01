@@ -41,16 +41,17 @@ function AuditPage() {
     )
   }
 
-  if (!unlocked) {
-    return <LeadGate result={result} onUnlock={() => setUnlocked(true)} />
-  }
-
   return (
-    <AuditReport
-      result={result}
-      mode={mode ?? 'public'}
-      onBack={() => navigate({ to: mode === 'internal' ? '/' : '/plp' })}
-      backLabel={mode === 'internal' ? 'Back to Internal Tool' : 'Exit Report'}
-    />
+    <>
+      <AuditReport
+        result={result}
+        mode={mode ?? 'public'}
+        onBack={() => navigate({ to: mode === 'internal' ? '/' : '/plp' })}
+        backLabel={mode === 'internal' ? 'Back to Internal Tool' : 'Exit Report'}
+      />
+      {!unlocked && (
+        <LeadGate result={result} onUnlock={() => setUnlocked(true)} />
+      )}
+    </>
   )
 }

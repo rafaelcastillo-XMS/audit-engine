@@ -27,11 +27,11 @@ export function LeadGate({ result, onUnlock }: LeadGateProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name:     name.trim(),
-          phone:    phone.trim(),
-          email:    email.trim(),
-          website:  result.url,
-          score:    result.scores.overall,
+          name:    name.trim(),
+          phone:   phone.trim(),
+          email:   email.trim(),
+          website: result.url,
+          score:   result.scores.overall,
           critical: criticalCount,
           warnings: warningCount,
         }),
@@ -45,11 +45,11 @@ export function LeadGate({ result, onUnlock }: LeadGateProps) {
   }
 
   return (
-    <div className="min-h-[80vh] bg-[#f4f7fd] flex items-center justify-center px-4 py-16">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className="w-full max-w-md">
 
         {/* Alert teaser */}
-        <div className="bg-white border border-red-100 rounded-2xl shadow-sm p-6 mb-6">
+        <div className="bg-white border border-red-100 rounded-2xl shadow-sm p-6 mb-4">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
               <ShieldAlert className="w-5 h-5 text-red-600" />

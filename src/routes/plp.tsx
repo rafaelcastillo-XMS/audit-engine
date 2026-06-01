@@ -138,7 +138,7 @@ function PlpPage() {
             </p>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-full p-3 shadow-lg shadow-gray-100/50 dark:bg-white/[0.04] dark:border-white/10 dark:shadow-none">
+          <div className="bg-white border border-gray-200 rounded-xl p-3 shadow-lg shadow-gray-100/50 dark:bg-white/[0.04] dark:border-white/10 dark:shadow-none">
             <AuditUrlForm
               onNavigate={(id) => navigate({ to: '/audit/$auditId', params: { auditId: id } })}
             />
