@@ -9,6 +9,7 @@ import { calculateScores } from './audit/scoring'
 import { generateFindings, generatePageSpeedFindings, buildExecutiveSummary } from './audit/recommendations'
 import { getPageSpeed } from './integrations/pagespeed'
 import { getAhrefsDomainData } from './integrations/ahrefs'
+import { appendLeadToSheet } from './integrations/sheets'
 import type { AuditResult } from './audit/types'
 
 const app = express()
@@ -103,6 +104,36 @@ app.post('/api/audit', async (req, res) => {
   }
 })
 
+// ── Lead capture endpoint (writes to Google Sheets) ────────────────────────
+interface LeadCapturePayload {
+  name:     string
+  phone?:   string
+  email:    string
+  website:  string
+  score:    number
+  critical: number
+  warnings: number
+}
+
+app.post('/api/leads', async (req, res) => {
+  const { name, phone = '', email, website, score, critical, warnings } = req.body as LeadCapturePayload
+
+  if (!name || !email || !website) {
+    res.status(400).json({ message: 'name, email and website are required' })
+    return
+  }
+
+  try {
+    await appendLeadToSheet({ name, phone, email, website, score, critical, warnings })
+  } catch (err) {
+    console.error('[leads] Sheet write failed:', err)
+    // Don't block the user — continue even if sheet write fails
+  }
+
+  res.json({ ok: true })
+})
+
+// ── Legacy email lead endpoint ──────────────────────────────────────────────
 interface LeadPayload {
   name: string
   email: string
