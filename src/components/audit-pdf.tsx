@@ -171,7 +171,7 @@ const S = StyleSheet.create({
     minHeight: 175,
   },
   scoreCardTitle: {
-    fontSize: 8.5,
+    fontSize: 10,
     fontFamily: 'Helvetica-Bold',
     color: '#1b2f5d',
   },
@@ -179,24 +179,24 @@ const S = StyleSheet.create({
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 60,
+    height: 72,
     marginBottom: 8,
     marginTop: 6,
   },
   scoreGaugeTextCenter: {
     position: 'absolute',
-    top: 20,
+    top: 17,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
   },
   scoreGaugePercent: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Helvetica-Bold',
     lineHeight: 1,
   },
   scoreGaugeHelper: {
-    fontSize: 5.5,
+    fontSize: 7,
     fontFamily: 'Helvetica-Bold',
     color: '#8c9ab8',
     marginTop: 2,
@@ -579,7 +579,7 @@ function PdfGauge({ score, accent }: { score: number; accent: string }) {
   const arcPath = getArcPath(score)
 
   return (
-    <Svg width={132} height={84} viewBox="0 0 132 84">
+    <Svg width={110} height={70} viewBox="0 0 132 84">
       {/* Background Arc */}
       <Path
         d="M 18 62 A 48 48 0 0 1 114 62"
@@ -794,9 +794,8 @@ function PdfDetailedList({ title, items, color }: { title: string; items: AuditF
 
 export function AuditPdfDocument({ result }: { result: AuditResult }) {
   const domain = new URL(result.url).hostname
-  const logoHorizontalSrc = `${window.location.origin}/logo-horizontal.webp`
-  const heroAnalystPhoneSrc = `${window.location.origin}/hero-analyst-phone.png`
   const logoIconSrc = `${window.location.origin}/logo-icon.png`
+  const heroAnalystPhoneSrc = `${window.location.origin}/hero-analyst-phone.png`
 
   const dateStr = new Date(result.createdAt).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -856,31 +855,30 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
       
       {/* PAGE 1: Header, Scores (Gauges), AI Search Access, Ahrefs */}
       <Page size="A4" style={S.page}>
-        {/* Full-bleed Header Banner */}
+        {/* Header Banner */}
         <View style={S.header}>
           <View style={S.headerTop}>
-            <Image style={S.logoHorizontal} src={logoHorizontalSrc} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Image style={{ width: 22, height: 22, objectFit: 'contain' }} src={logoIconSrc} />
+              <Text style={{ fontSize: 12, fontFamily: 'Helvetica-Bold', color: C.ink }}>XMS Ai</Text>
+            </View>
             <View style={S.headerBadgeContainer}>
               <SparklesIcon size={9} color={C.primary} />
               <Text style={S.headerBadgeText}>AI VISIBILITY AUDIT REPORT</Text>
             </View>
           </View>
-          
+
           <View style={S.headerContent}>
             {/* Left Column */}
             <View style={S.headerLeftCol}>
-              <Text style={S.headerTitle}>AI Search & Digital Visibility Audit</Text>
+              <Text style={S.headerTitle}>{'AI Search & Digital\nVisibility Audit'}</Text>
               <Text style={S.headerSubtitle}>SEO · AEO · GEO Intelligence Assessment</Text>
-              <View style={S.urlSearchBox}>
-                <SearchIcon size={10} color={C.primary} />
-                <Text style={S.urlSearchText}>{domain}</Text>
-              </View>
               <Text style={S.headerDate}>Prepared on {dateStr}  ·  For internal use only</Text>
             </View>
-            
+
             {/* Right Column (Hero & Styled Badges) */}
             <View style={S.headerRightCol}>
-              <Image style={{ height: 160, width: 110, objectFit: 'contain' }} src={heroAnalystPhoneSrc} />
+              <Image style={{ height: 160, objectFit: 'contain' }} src={heroAnalystPhoneSrc} />
               <View style={{ flexDirection: 'column', gap: 6, marginLeft: 12, marginBottom: 24 }}>
                 <View style={S.heroBadge}>
                   <SearchIcon size={14} color={C.primary} />
@@ -1022,7 +1020,7 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
             <View style={S.ahrefsBand}>
               <View style={S.ahrefsBandHeader}>
                 <View>
-                  <Text style={S.ahrefsBandTitle}>DEEP AUDIT RESULT</Text>
+                  <Text style={S.ahrefsBandTitle}>INITIAL AUDIT RESULTS</Text>
                   <Text style={S.ahrefsBandSub}>Powered by Ahrefs</Text>
                 </View>
                 <Image style={{ height: 16, width: 48, objectFit: 'contain' }} src={`${window.location.origin}/logos/ahrefs.png`} />
@@ -1053,18 +1051,12 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
             <Image style={{ width: 8, height: 8, objectFit: 'contain' }} src={logoIconSrc} />
             <Text style={S.footerBrand}>XMS Ai</Text>
           </View>
-          <Text style={S.footerUrl}>xperienceusa.com</Text>
+          <Text style={S.footerBrand}>xperienceusa.com</Text>
         </View>
       </Page>
 
       {/* PAGE 2: Executive Summary & Untapped Opportunities */}
-      <Page size="A4" style={[S.page, { paddingTop: 40 }]}>
-        {/* Mini Header */}
-        <View fixed style={S.miniHeader}>
-          <Text style={S.miniHeaderText}>XMS · AI VISIBILITY REPORT</Text>
-          <Text style={S.miniHeaderText}>{domain.toUpperCase()}</Text>
-        </View>
-
+      <Page size="A4" style={[S.page, { paddingTop: 24 }]}>
         <View style={{ paddingHorizontal: 40, paddingTop: 16, paddingBottom: 24 }}>
           {/* Executive Summary */}
           <View style={{ marginTop: 6 }}>
@@ -1127,18 +1119,12 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
             <Image style={{ width: 8, height: 8, objectFit: 'contain' }} src={logoIconSrc} />
             <Text style={S.footerBrand}>XMS Ai</Text>
           </View>
-          <Text style={S.footerUrl}>xperienceusa.com</Text>
+          <Text style={S.footerBrand}>xperienceusa.com</Text>
         </View>
       </Page>
 
       {/* PAGE 3: Initial Technical Assessment & CTA Banner */}
-      <Page size="A4" style={[S.page, { paddingTop: 40 }]}>
-        {/* Mini Header */}
-        <View fixed style={S.miniHeader}>
-          <Text style={S.miniHeaderText}>XMS · AI VISIBILITY REPORT</Text>
-          <Text style={S.miniHeaderText}>{domain.toUpperCase()}</Text>
-        </View>
-
+      <Page size="A4" style={[S.page, { paddingTop: 24 }]}>
         <View style={{ paddingHorizontal: 40, paddingTop: 16, paddingBottom: 24 }}>
           {/* Technical findings */}
           <View style={S.sectionTitleRow}>
@@ -1173,7 +1159,7 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
             <Image style={{ width: 8, height: 8, objectFit: 'contain' }} src={logoIconSrc} />
             <Text style={S.footerBrand}>XMS Ai</Text>
           </View>
-          <Text style={S.footerUrl}>xperienceusa.com</Text>
+          <Text style={S.footerBrand}>xperienceusa.com</Text>
         </View>
       </Page>
     </Document>
