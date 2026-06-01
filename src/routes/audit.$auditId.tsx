@@ -42,7 +42,7 @@ function AuditPage() {
     <AuditReport
       result={result}
       mode={mode ?? 'public'}
-      onBack={() => navigate({ to: mode === 'internal' ? '/internal' : '/' })}
+      onBack={() => navigate({ to: mode === 'internal' ? '/' : '/plp' })}
       backLabel={mode === 'internal' ? 'Back to Internal Tool' : 'Exit Report'}
     />
   )

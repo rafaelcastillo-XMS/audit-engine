@@ -9,14 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as InternalRouteImport } from './routes/internal'
+import { Route as PlpRouteImport } from './routes/plp'
 import { Route as AuditsRouteImport } from './routes/audits'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuditAuditIdRouteImport } from './routes/audit.$auditId'
 
-const InternalRoute = InternalRouteImport.update({
-  id: '/internal',
-  path: '/internal',
+const PlpRoute = PlpRouteImport.update({
+  id: '/plp',
+  path: '/plp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuditsRoute = AuditsRouteImport.update({
@@ -38,44 +38,44 @@ const AuditAuditIdRoute = AuditAuditIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/audits': typeof AuditsRoute
-  '/internal': typeof InternalRoute
+  '/plp': typeof PlpRoute
   '/audit/$auditId': typeof AuditAuditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/audits': typeof AuditsRoute
-  '/internal': typeof InternalRoute
+  '/plp': typeof PlpRoute
   '/audit/$auditId': typeof AuditAuditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/audits': typeof AuditsRoute
-  '/internal': typeof InternalRoute
+  '/plp': typeof PlpRoute
   '/audit/$auditId': typeof AuditAuditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/audits' | '/internal' | '/audit/$auditId'
+  fullPaths: '/' | '/audits' | '/plp' | '/audit/$auditId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/audits' | '/internal' | '/audit/$auditId'
-  id: '__root__' | '/' | '/audits' | '/internal' | '/audit/$auditId'
+  to: '/' | '/audits' | '/plp' | '/audit/$auditId'
+  id: '__root__' | '/' | '/audits' | '/plp' | '/audit/$auditId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuditsRoute: typeof AuditsRoute
-  InternalRoute: typeof InternalRoute
+  PlpRoute: typeof PlpRoute
   AuditAuditIdRoute: typeof AuditAuditIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/internal': {
-      id: '/internal'
-      path: '/internal'
-      fullPath: '/internal'
-      preLoaderRoute: typeof InternalRouteImport
+    '/plp': {
+      id: '/plp'
+      path: '/plp'
+      fullPath: '/plp'
+      preLoaderRoute: typeof PlpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/audits': {
@@ -105,7 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuditsRoute: AuditsRoute,
-  InternalRoute: InternalRoute,
+  PlpRoute: PlpRoute,
   AuditAuditIdRoute: AuditAuditIdRoute,
 }
 export const routeTree = rootRouteImport

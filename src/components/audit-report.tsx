@@ -22,7 +22,7 @@ export function AuditReport({
 
   return (
     <div className="w-full">
-      <div className={inline ? 'border-t border-gray-100 dark:border-white/[0.07]' : 'pt-6 pb-12'}>
+      <div className={inline ? 'border-t border-gray-100' : 'pt-6 pb-12'}>
         <AuditPdfTemplate
           result={result}
           mode={mode}

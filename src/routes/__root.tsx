@@ -30,7 +30,7 @@ function RootLayout() {
   const [dark, setDark] = useDarkMode()
   const { location } = useRouterState()
   const isAuditPage = location.pathname.startsWith('/audit/')
-  const isDarkHero = location.pathname === '/' || isAuditPage
+  const isDarkHero = location.pathname === '/plp' || isAuditPage
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -64,13 +64,13 @@ function RootLayout() {
               transparent ? 'text-white' : 'text-gray-500 dark:text-gray-300'
               }`}>
               <a
-                href="/#how-it-works"
+                href="/plp#how-it-works"
                 className={`transition-colors ${transparent ? 'hover:text-white/70' : 'hover:text-gray-900 dark:hover:text-white'}`}
               >
                 How it works
               </a>
               <a
-                href="/#analyze"
+                href="/plp#analyze"
                 className={`transition-colors ${transparent ? 'hover:text-white/70' : 'hover:text-gray-900 dark:hover:text-white'}`}
               >
                 What we analyze

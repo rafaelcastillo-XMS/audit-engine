@@ -100,6 +100,25 @@ body {
   background: #fafaf7 !important;
 }
 
+/* Cancel dark mode overrides inside the report shell so it always renders in light mode */
+.dark .report-shell .bg-white { background-color: #ffffff !important; }
+.dark .report-shell .bg-gray-50 { background-color: #f9fafb !important; }
+.dark .report-shell .bg-gray-100 { background-color: #f3f4f6 !important; }
+.dark .report-shell .bg-slate-100 { background-color: #f1f5f9 !important; }
+.dark .report-shell .bg-blue-50 { background-color: #eff6ff !important; }
+.dark .report-shell .bg-orange-50 { background-color: #fff7ed !important; }
+.dark .report-shell .bg-red-50 { background-color: #fef2f2 !important; }
+.dark .report-shell .bg-amber-50 { background-color: #fffbeb !important; }
+.dark .report-shell .bg-green-50 { background-color: #f0fdf4 !important; }
+.dark .report-shell .text-gray-900 { color: #111827 !important; }
+.dark .report-shell .text-gray-800 { color: #1f2937 !important; }
+.dark .report-shell .text-gray-700 { color: #374151 !important; }
+.dark .report-shell .text-gray-600 { color: #4b5563 !important; }
+.dark .report-shell .text-gray-500 { color: #6b7280 !important; }
+.dark .report-shell .text-gray-400 { color: #9ca3af !important; }
+.dark .report-shell [class*="border-gray"] { border-color: unset !important; }
+.dark .report-shell .shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important; }
+
 @media print {
   .print\:hidden { display: none !important; }
 
