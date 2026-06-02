@@ -13,6 +13,13 @@ export function LeadGate({ result, onUnlock }: LeadGateProps) {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const formatPhone = (raw: string) => {
+    const digits = raw.replace(/\D/g, '').slice(0, 10)
+    if (digits.length < 4) return digits
+    if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
+  }
+
   const criticalCount = result.findings.filter(f => f.severity === 'critical').length
   const warningCount = result.findings.filter(f => f.severity === 'warning').length
   const domain = new URL(result.url).hostname
@@ -109,8 +116,9 @@ export function LeadGate({ result, onUnlock }: LeadGateProps) {
               <input
                 type="tel"
                 value={phone}
-                onChange={e => setPhone(e.target.value)}
-                placeholder="+1 (555) 000-0000"
+                onChange={e => setPhone(formatPhone(e.target.value))}
+                placeholder="(555) 000-0000"
+                maxLength={14}
                 className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
