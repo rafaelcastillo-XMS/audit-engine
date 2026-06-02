@@ -3,11 +3,22 @@ import { google } from 'googleapis'
 const SHEET_ID = process.env.GOOGLE_SHEET_ID ?? '1YL0197EwttjI-fVHujUaoDRbYFVpDrNJfb05h6g4KNk'
 const RANGE   = 'Sheet1!A1'
 
+function parsePrivateKey(raw: string | undefined): string | null {
+  if (!raw) return null
+  // Handle both literal \n (from .env files) and actual newlines (from Dokploy/Docker UI)
+  return raw.replace(/\\n/g, '\n')
+}
+
 function getAuth() {
   const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
-  const privateKey  = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+  const privateKey  = parsePrivateKey(process.env.GOOGLE_PRIVATE_KEY)
 
-  if (!clientEmail || !privateKey) return null
+  console.log('[sheets] Auth check — email present:', !!clientEmail, '| key present:', !!privateKey)
+
+  if (!clientEmail || !privateKey) {
+    console.warn('[sheets] Missing credentials — GOOGLE_SERVICE_ACCOUNT_EMAIL or GOOGLE_PRIVATE_KEY not set')
+    return null
+  }
 
   return new google.auth.GoogleAuth({
     credentials: { client_email: clientEmail, private_key: privateKey },
@@ -22,15 +33,13 @@ export async function appendLeadToSheet(data: {
   website: string
 }) {
   const auth = getAuth()
-  if (!auth) {
-    console.warn('[sheets] Missing GOOGLE_SERVICE_ACCOUNT_EMAIL or GOOGLE_PRIVATE_KEY — skipping sheet write')
-    return
-  }
+  if (!auth) return
 
   const sheets = google.sheets({ version: 'v4', auth })
 
-  // Columns: DATE | URL | NAME | Phone | EMAIL
-  const date = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+  const date = new Date().toLocaleString('en-US')
+
+  console.log('[sheets] Appending row for:', data.email, data.website)
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
@@ -47,5 +56,5 @@ export async function appendLeadToSheet(data: {
     },
   })
 
-  console.log(`[sheets] Lead saved: ${data.email} — ${data.website}`)
+  console.log('[sheets] Row appended successfully')
 }
