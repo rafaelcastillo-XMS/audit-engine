@@ -1,9 +1,7 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
-import { useState } from 'react'
 import { ArrowLeft, AlertTriangle } from 'lucide-react'
 import { z } from 'zod'
 import { AuditReport } from '@/components/audit-report'
-import { LeadGate } from '@/components/lead-gate'
 import { getAudit } from '@/lib/audit/storage'
 import { Button } from '@/components/ui/button'
 
@@ -21,7 +19,6 @@ function AuditPage() {
   const { mode } = Route.useSearch()
   const navigate = useNavigate()
   const result = getAudit(auditId)
-  const [unlocked, setUnlocked] = useState(mode === 'internal')
 
   if (!result) {
     return (
@@ -42,16 +39,11 @@ function AuditPage() {
   }
 
   return (
-    <>
-      <AuditReport
-        result={result}
-        mode={mode ?? 'public'}
-        onBack={() => navigate({ to: mode === 'internal' ? '/' : '/plp' })}
-        backLabel={mode === 'internal' ? 'Back to Internal Tool' : 'Exit Report'}
-      />
-      {!unlocked && (
-        <LeadGate result={result} onUnlock={() => setUnlocked(true)} />
-      )}
-    </>
+    <AuditReport
+      result={result}
+      mode={mode ?? 'public'}
+      onBack={() => navigate({ to: mode === 'internal' ? '/' : '/plp' })}
+      backLabel={mode === 'internal' ? 'Back to Internal Tool' : 'Exit Report'}
+    />
   )
 }

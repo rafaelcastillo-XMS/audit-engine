@@ -30,6 +30,7 @@ function RootLayout() {
   const [dark, setDark] = useDarkMode()
   const { location } = useRouterState()
   const isAuditPage = location.pathname.startsWith('/audit/')
+  const isIndexPage = location.pathname === '/'
   const isDarkHero = location.pathname === '/plp' || isAuditPage
   const [scrolled, setScrolled] = useState(false)
 
@@ -45,13 +46,13 @@ function RootLayout() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className={`top-0 z-50 w-full transition-all duration-300 print:hidden ${transparent
+      <header className={`top-0 z-50 w-full transition-all duration-300 print:hidden ${isIndexPage ? 'hidden' : ''} ${transparent
         ? 'fixed bg-transparent border-transparent'
         : 'sticky border-b border-gray-100 bg-white/95 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-950/95'
         }`}>
         <div className="max-w-6xl mx-auto py-1 px-4 h-16 flex items-center justify-between">
           {!isAuditPage && (
-            <Link to="/" className="flex items-center">
+            <Link to={isIndexPage ? '/' : '/plp'} className="flex items-center">
               <img
                 src={transparent || dark ? '/LOGO - BLACK BACKGROUND.webp' : '/logo-horizontal.webp'}
                 alt="XMS Audit Lab"
@@ -59,7 +60,7 @@ function RootLayout() {
               />
             </Link>
           )}
-          {!isAuditPage && (
+          {!isAuditPage && !isIndexPage && (
             <nav className={`hidden sm:flex items-center gap-7 text-base font-medium transition-colors duration-300 ${
               transparent ? 'text-white' : 'text-gray-500 dark:text-gray-300'
               }`}>

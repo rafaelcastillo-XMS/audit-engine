@@ -13,6 +13,20 @@ function InternalPage() {
     <div className="flex flex-col items-center justify-center px-4 py-16">
       <div className="w-full max-w-2xl">
 
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <img
+            src="/logo-horizontal.webp"
+            alt="XMS Audit Lab"
+            className="h-12 w-auto dark:hidden"
+          />
+          <img
+            src="/LOGO - BLACK BACKGROUND.webp"
+            alt="XMS Audit Lab"
+            className="h-12 w-auto hidden dark:block"
+          />
+        </div>
+
         {/* Badge */}
         <div className="flex justify-center mb-6">
           <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-400 text-xs font-bold px-3.5 py-1.5 rounded-full">

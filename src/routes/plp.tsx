@@ -1,44 +1,25 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { Sparkles, ChevronDown, Check } from 'lucide-react'
+import { useState } from 'react'
+import { Sparkles, ChevronDown, Check, ShieldAlert, AlertTriangle } from 'lucide-react'
 import { AuditUrlForm } from '@/components/audit-url-form'
+import { ScanLeadModal } from '@/components/scan-lead-modal'
 import { HowItWorks } from '@/components/how-it-works'
 import { WhatWeAnalyze } from '@/components/what-we-analyze'
 import { FaqSection } from '@/components/faq-section'
+import type { AuditResult } from '@/lib/audit/types'
 
 export const Route = createFileRoute('/plp')({
   component: PlpPage,
 })
 
-const HERO_IMAGES = [
-  { src: '/Hero_slide-3.png', alt: 'Laborman usin XMS Audit on phone' },
-  { src: '/Hero_slide-4.png', alt: 'Person using XMS Audit Lab on smartphone' },
-  { src: '/Hero_slide-2.png', alt: 'Woman using XMS Audit Lab on phone' },
-  { src: '/Hero_slide-1.png', alt: 'Laborman usin XMS Audit on phone' },
-
-]
-
-function HeroCarousel() {
-  const [current, setCurrent] = useState(0)
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setCurrent(i => (i + 1) % HERO_IMAGES.length)
-    }, 5000)
-    return () => clearInterval(id)
-  }, [])
-
+function HeroImage() {
   return (
-    <div className="hidden lg:block relative overflow-hidden">
-      {HERO_IMAGES.map((img, i) => (
-        <img
-          key={img.src}
-          src={img.src}
-          alt={img.alt}
-          className={`absolute bottom-0 right-0 w-auto max-h-full max-w-full object-contain transition-opacity duration-700 ${i === current ? 'opacity-100' : 'opacity-0'
-            }`}
-        />
-      ))}
+    <div className="hidden lg:flex items-end justify-end overflow-hidden">
+      <img
+        src="/Hero_slide-6.png"
+        alt="Person analyzing website visibility with XMS Audit Lab"
+        className="w-auto max-h-full max-w-full object-contain"
+      />
     </div>
   )
 }
@@ -52,14 +33,76 @@ const STATS = [
   { label: 'Scan Time', value: '<10s' },
 ]
 
+function AuditInsightsTeaser({ result }: { result: AuditResult }) {
+  const criticalCount = result.findings.filter(f => f.severity === 'critical').length
+  const warningCount = result.findings.filter(f => f.severity === 'warning').length
+  const domain = (() => { try { return new URL(result.url).hostname } catch { return result.url } })()
+
+  return (
+    <div className="bg-white border border-red-100 rounded-2xl shadow-sm p-6">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+          <ShieldAlert className="w-5 h-5 text-red-600" />
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Scan complete</p>
+          <p className="text-sm font-bold text-gray-800 truncate">{domain}</p>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {criticalCount > 0 && (
+          <span className="inline-flex items-center gap-1.5 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+            <AlertTriangle className="w-3 h-3" />
+            {criticalCount} critical threat{criticalCount !== 1 ? 's' : ''} found
+          </span>
+        )}
+        {warningCount > 0 && (
+          <span className="inline-flex items-center gap-1.5 bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+            {warningCount} urgent alert{warningCount !== 1 ? 's' : ''}
+          </span>
+        )}
+        <span className="inline-flex items-center gap-1.5 bg-red-50 text-red-700 border border-red-200 text-xs font-bold px-3 py-1.5 rounded-full animate-pulse">
+          ⚡ Act Now — Your Rankings Are at Risk
+        </span>
+      </div>
+
+      <p className="text-sm text-gray-500 leading-relaxed">
+        Your full report is ready — enter your email in the popup above to access it instantly.
+      </p>
+    </div>
+  )
+}
+
 function PlpPage() {
   const navigate = useNavigate()
+  const [scanUrl, setScanUrl] = useState<string | null>(null)
+  const [completedAudit, setCompletedAudit] = useState<AuditResult | null>(null)
+
+  const handleScanStart = (url: string) => {
+    setScanUrl(url)
+    setCompletedAudit(null)
+  }
+
+  const handleModalClose = () => {
+    setScanUrl(null)
+    setCompletedAudit(null)
+  }
 
   const scrollToForm = () =>
     document.getElementById('audit-form')?.scrollIntoView({ behavior: 'smooth' })
 
   return (
     <>
+      {scanUrl && (
+        <ScanLeadModal
+          url={scanUrl}
+          onClose={handleModalClose}
+          onAuditComplete={setCompletedAudit}
+          onNavigate={(id) => navigate({ to: '/audit/$auditId', params: { auditId: id } })}
+        />
+      )}
+
       {/* ── Hero — 100vh desktop ── */}
       <section className="relative overflow-hidden bg-[#060d20]">
         {/* Ambient orbs */}
@@ -68,12 +111,12 @@ function PlpPage() {
         <div className="absolute top-1/2 right-1/3 w-[300px] h-[300px] bg-cyan-600/[0.07] rounded-full blur-[90px] pointer-events-none" />
         <div className="absolute inset-0 hero-dots pointer-events-none" />
 
-        <div className="relative w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-12 lg:gap-16 pt-8">
+        <div className="relative w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[2fr_2fr] gap-12 lg:gap-16 pt-8">
 
           {/* Left — 40%, text vertically centered, owns vertical padding */}
           <div className="flex flex-col justify-center items-start py-24 md:py-32">
-            <h1 className="text-4xl md:text-5xl lg:text-5xl font-bold text-white leading-[1.06] tracking-tight mb-6">
-              Is Your Business Visible &nbsp;
+            <h1 className="text-5xl font-bold text-white leading-[1.06] tracking-tight mb-6">
+              Is Your Business Visible{' '}
               <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-teal-300 bg-clip-text text-transparent">
                 to ChatGPT, Claude & Gemini?
               </span>
@@ -107,8 +150,8 @@ function PlpPage() {
             </div>
           </div>
 
-          {/* Right — 60%, carousel anchored to bottom */}
-          <HeroCarousel />
+          {/* Right — image anchored to bottom */}
+          <HeroImage />
         </div>
       </section>
 
@@ -138,14 +181,18 @@ function PlpPage() {
             </p>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-3 shadow-lg shadow-gray-100/50 dark:bg-white/[0.04] dark:border-white/10 dark:shadow-none">
-            <AuditUrlForm
-              onNavigate={(id) => navigate({ to: '/audit/$auditId', params: { auditId: id } })}
-            />
-          </div>
-          <p className="mt-3 text-center text-xs text-gray-400">
-            Free · No account required · Fast scan · AI-ready analysis
-          </p>
+          {completedAudit && scanUrl ? (
+            <AuditInsightsTeaser result={completedAudit} />
+          ) : (
+            <>
+              <div className="bg-white border border-gray-200 rounded-xl p-3 shadow-lg shadow-gray-100/50 dark:bg-white/[0.04] dark:border-white/10 dark:shadow-none">
+                <AuditUrlForm onScanStart={handleScanStart} />
+              </div>
+              <p className="mt-3 text-center text-xs text-gray-400">
+                Free · No account required · Fast scan · AI-ready analysis
+              </p>
+            </>
+          )}
         </div>
       </section>
 
@@ -181,6 +228,7 @@ function PlpPage() {
             <Sparkles className="w-4 h-4 text-amber-400" />
             Generate Audit Report
           </button>
+
         </div>
       </section>
     </>

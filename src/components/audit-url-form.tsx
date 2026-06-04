@@ -27,10 +27,11 @@ type FormValues = z.infer<typeof schema>
 interface AuditUrlFormProps {
   onResult?: (result: AuditResult) => void
   onNavigate?: (id: string) => void
+  onScanStart?: (url: string) => void
   compact?: boolean
 }
 
-export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrlFormProps) {
+export function AuditUrlForm({ onResult, onNavigate, onScanStart, compact = false }: AuditUrlFormProps) {
   const [isRunning, setIsRunning] = useState(false)
   const [step, setStep] = useState(0)
   const [error, setError] = useState<string | null>(null)
@@ -53,6 +54,11 @@ export function AuditUrlForm({ onResult, onNavigate, compact = false }: AuditUrl
   }
 
   const onSubmit = async (values: FormValues) => {
+    if (onScanStart) {
+      onScanStart(values.url)
+      return
+    }
+
     setIsRunning(true)
     setError(null)
     setStep(0)
