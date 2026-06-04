@@ -111,7 +111,7 @@ function PlpPage() {
         <div className="absolute top-1/2 right-1/3 w-[300px] h-[300px] bg-cyan-600/[0.07] rounded-full blur-[90px] pointer-events-none" />
         <div className="absolute inset-0 hero-dots pointer-events-none" />
 
-        <div className="relative w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[2fr_2fr] gap-12 lg:gap-16 pt-8">
+        <div className="relative w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-12 lg:gap-16 pt-8">
 
           {/* Left — 40%, text vertically centered, owns vertical padding */}
           <div className="flex flex-col justify-center items-start py-24 md:py-32">
