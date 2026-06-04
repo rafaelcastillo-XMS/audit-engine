@@ -1,3 +1,4 @@
+// Signal extraction — canonical signals defined in docs/agent-prompt.md (STEP 1)
 import * as cheerio from 'cheerio'
 import type { RawData } from './types'
 import { fetchText } from './fetch-site'

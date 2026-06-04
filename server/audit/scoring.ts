@@ -1,3 +1,4 @@
+// Scoring logic — canonical parameters defined in docs/agent-prompt.md (STEP 2)
 import type { RawData, AuditScores } from './types'
 
 export function calculateScores(data: RawData): AuditScores {

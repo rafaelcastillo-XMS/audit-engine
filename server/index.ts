@@ -10,6 +10,7 @@ import { generateFindings, generatePageSpeedFindings, buildExecutiveSummary } fr
 import { getPageSpeed } from './integrations/pagespeed'
 import { getAhrefsDomainData } from './integrations/ahrefs'
 import { appendLeadToSheet } from './integrations/sheets'
+import { getMasterPrompt } from './audit/master-prompt'
 import type { AuditResult } from './audit/types'
 
 const app = express()
@@ -29,6 +30,10 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true, ts: new Date().toISOString() })
 })
 
+app.get('/api/audit/prompt', (_req, res) => {
+  res.type('text/markdown').send(getMasterPrompt())
+})
+
 app.post('/api/audit', async (req, res) => {
   const { url } = req.body as { url?: string }
 
@@ -38,7 +43,8 @@ app.post('/api/audit', async (req, res) => {
   }
 
   let normalized = url.trim()
-  if (!normalized.startsWith('http://') && !normalized.startsWith('https://')) {
+  const hasProtocol = normalized.startsWith('http://') || normalized.startsWith('https://')
+  if (!hasProtocol) {
     normalized = `https://${normalized}`
   }
 
@@ -50,7 +56,17 @@ app.post('/api/audit', async (req, res) => {
   }
 
   try {
-    const fetched = await fetchSite(normalized)
+    let fetched = await fetchSite(normalized)
+
+    // If no protocol was provided and HTTPS failed at the network level, try HTTP
+    if (!hasProtocol && !fetched.ok && fetched.statusCode === 0) {
+      const httpFallback = normalized.replace(/^https:\/\//, 'http://')
+      const fallbackResult = await fetchSite(httpFallback)
+      if (fallbackResult.ok) {
+        fetched = fallbackResult
+        normalized = httpFallback
+      }
+    }
     if (!fetched.ok) {
       const is403 = fetched.error?.includes('403')
       const message = is403

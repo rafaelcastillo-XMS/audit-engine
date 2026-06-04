@@ -1,3 +1,4 @@
+// Findings and summary logic — canonical parameters defined in docs/agent-prompt.md (STEP 3–5)
 import type { RawData, AuditFinding, PageSpeedResult } from './types'
 
 let _id = 0
