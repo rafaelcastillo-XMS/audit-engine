@@ -330,11 +330,10 @@ function AhrefsBand({ result }: { result: AuditResult }) {
 
   const metrics = [
     { label: 'Domain Rating', value: `${result.ahrefs.domainRating}/100`, icon: Shield },
-    { label: 'Ahrefs Rank', value: `#${result.ahrefs.ahrefsRank.toLocaleString()}`, icon: ChartColumnBig },
     { label: 'Backlinks', value: result.ahrefs.backlinks.toLocaleString(), icon: Link2 },
     { label: 'Ref. Domains', value: result.ahrefs.referringDomains.toLocaleString(), icon: Users },
-    { label: 'Organic Traffic', value: result.ahrefs.organicTraffic.toLocaleString(), icon: ArrowRight },
-    { label: 'Organic Keywords', value: result.ahrefs.organicKeywords.toLocaleString(), icon: Search },
+    { label: 'Organic Traffic (US)', value: result.ahrefs.organicTraffic.toLocaleString(), icon: ArrowRight },
+    { label: 'Organic Keywords (US)', value: result.ahrefs.organicKeywords.toLocaleString(), icon: Search },
   ]
 
   return (
@@ -348,7 +347,7 @@ function AhrefsBand({ result }: { result: AuditResult }) {
       </div>
 
       <div className="bg-white px-2 py-1">
-        <div className="grid md:grid-cols-6">
+        <div className="grid md:grid-cols-5">
           {metrics.map((metric, index) => {
             const Icon = metric.icon
             return (

@@ -828,11 +828,10 @@ export function AuditPdfDocument({ result }: { result: AuditResult }) {
   const ahrefsMetrics = result.ahrefs
     ? [
         { label: 'Domain Rating', value: `${result.ahrefs.domainRating}/100` },
-        { label: 'Ahrefs Rank', value: `#${result.ahrefs.ahrefsRank.toLocaleString()}` },
         { label: 'Backlinks', value: result.ahrefs.backlinks.toLocaleString() },
         { label: 'Ref. Domains', value: result.ahrefs.referringDomains.toLocaleString() },
-        { label: 'Organic Traffic', value: result.ahrefs.organicTraffic.toLocaleString() },
-        { label: 'Organic Keywords', value: result.ahrefs.organicKeywords.toLocaleString() },
+        { label: 'Organic Traffic (US)', value: result.ahrefs.organicTraffic.toLocaleString() },
+        { label: 'Organic Keywords (US)', value: result.ahrefs.organicKeywords.toLocaleString() },
       ]
     : []
 

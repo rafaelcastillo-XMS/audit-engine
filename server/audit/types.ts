@@ -53,7 +53,6 @@ export interface PageSpeedResult {
 
 export interface AhrefsData {
   domainRating: number
-  ahrefsRank: number
   backlinks: number
   referringDomains: number
   organicTraffic: number

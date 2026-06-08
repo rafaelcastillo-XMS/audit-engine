@@ -6,7 +6,6 @@ export interface AhrefsConfig {
 
 export interface AhrefsDomainData {
   domainRating: number
-  ahrefsRank: number
   backlinks: number
   referringDomains: number
   organicTraffic: number
@@ -24,26 +23,28 @@ export async function getAhrefsDomainData(
   const base = 'https://api.ahrefs.com/v3/site-explorer'
   const params = new URLSearchParams({ target, date })
   const paramsMode = new URLSearchParams({ target, date, mode: 'domain' })
+  const paramsUS = new URLSearchParams({ target, date, mode: 'domain', country: 'US' })
 
   const [drRes, backlinksRes, metricsRes] = await Promise.all([
     fetch(`${base}/domain-rating?${params}`, { headers }),
     fetch(`${base}/backlinks-stats?${paramsMode}`, { headers }),
-    fetch(`${base}/metrics?${paramsMode}`, { headers }),
+    fetch(`${base}/metrics-by-country?${paramsUS}`, { headers }),
   ])
 
   const [drJson, backlinksJson, metricsJson] = await Promise.all([
-    drRes.json() as Promise<{ domain_rating?: { domain_rating?: number; ahrefs_rank?: number } }>,
+    drRes.json() as Promise<{ domain_rating?: { domain_rating?: number } }>,
     backlinksRes.json() as Promise<{ metrics?: { live?: number; live_refdomains?: number } }>,
-    metricsRes.json() as Promise<{ metrics?: { org_traffic?: number; org_keywords?: number } }>,
+    metricsRes.json() as Promise<{ metrics?: Array<{ org_traffic?: number; org_keywords?: number }> }>,
   ])
+
+  const usMetrics = metricsJson.metrics?.[0]
 
   return {
     domainRating:     toNum(drJson.domain_rating?.domain_rating),
-    ahrefsRank:       toNum(drJson.domain_rating?.ahrefs_rank),
     backlinks:        toNum(backlinksJson.metrics?.live),
     referringDomains: toNum(backlinksJson.metrics?.live_refdomains),
-    organicTraffic:   toNum(metricsJson.metrics?.org_traffic),
-    organicKeywords:  toNum(metricsJson.metrics?.org_keywords),
+    organicTraffic:   toNum(usMetrics?.org_traffic),
+    organicKeywords:  toNum(usMetrics?.org_keywords),
   }
 }
 

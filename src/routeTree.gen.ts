@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlpRouteImport } from './routes/plp'
 import { Route as AuditsRouteImport } from './routes/audits'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuditAuditIdRouteImport } from './routes/audit.$auditId'
 
@@ -22,6 +23,11 @@ const PlpRoute = PlpRouteImport.update({
 const AuditsRoute = AuditsRouteImport.update({
   id: '/audits',
   path: '/audits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +43,14 @@ const AuditAuditIdRoute = AuditAuditIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/audits': typeof AuditsRoute
   '/plp': typeof PlpRoute
   '/audit/$auditId': typeof AuditAuditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/audits': typeof AuditsRoute
   '/plp': typeof PlpRoute
   '/audit/$auditId': typeof AuditAuditIdRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/audits': typeof AuditsRoute
   '/plp': typeof PlpRoute
   '/audit/$auditId': typeof AuditAuditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/audits' | '/plp' | '/audit/$auditId'
+  fullPaths: '/' | '/$' | '/audits' | '/plp' | '/audit/$auditId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/audits' | '/plp' | '/audit/$auditId'
-  id: '__root__' | '/' | '/audits' | '/plp' | '/audit/$auditId'
+  to: '/' | '/$' | '/audits' | '/plp' | '/audit/$auditId'
+  id: '__root__' | '/' | '/$' | '/audits' | '/plp' | '/audit/$auditId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SplatRoute: typeof SplatRoute
   AuditsRoute: typeof AuditsRoute
   PlpRoute: typeof PlpRoute
   AuditAuditIdRoute: typeof AuditAuditIdRoute
@@ -85,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuditsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SplatRoute: SplatRoute,
   AuditsRoute: AuditsRoute,
   PlpRoute: PlpRoute,
   AuditAuditIdRoute: AuditAuditIdRoute,
